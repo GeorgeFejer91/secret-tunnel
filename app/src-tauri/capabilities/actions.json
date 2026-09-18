@@ -1,7 +1,0 @@
-{
-  "$schema": "../gen/schemas/desktop-schema.json",
-  "identifier": "actions-window",
-  "description": "Local Actions window; execution authorization is additionally restricted by Rust window and origin checks.",
-  "windows": ["actions"],
-  "permissions": ["core:default", "clipboard-manager:allow-write-text"]
-}
