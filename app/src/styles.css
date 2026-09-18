@@ -1,0 +1,690 @@
+:root {
+  color: #f8fafc;
+  background: #0d1117;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 580px;
+  min-height: 648px;
+  background: #0d1117;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  height: 34px;
+  border: 1px solid #374151;
+  border-radius: 7px;
+  padding: 0 12px;
+  color: #f8fafc;
+  background: #111827;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1f2937;
+}
+
+button:disabled,
+input:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+button.danger {
+  border-color: #9f1239;
+  color: #9f1239;
+}
+
+input {
+  width: 100%;
+  height: 34px;
+  min-width: 0;
+  border: 1px solid #374151;
+  border-radius: 7px;
+  padding: 0 10px;
+  color: #f8fafc;
+  background: #111827;
+}
+
+input:focus,
+button:focus-visible {
+  outline: 2px solid #0f766e;
+  outline-offset: 1px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  color: #d1d5db;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+p {
+  margin: 4px 0 0;
+  color: #cbd5e1;
+}
+
+.shell {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  max-width: 580px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  overflow: hidden;
+}
+
+.row,
+.copy-row,
+.button-row,
+.diag-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero {
+  position: relative;
+  display: block;
+  min-height: 150px;
+  padding-bottom: 10px;
+}
+
+.hero-art {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  width: 168px;
+  height: 145px;
+  object-fit: contain;
+  object-position: left top;
+  transform: translate(-5px, -4px);
+  transform-origin: 35% 35%;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.28));
+  transition: opacity 150ms ease;
+}
+
+.hero-art-flow {
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.running.flow-ready .hero-art-static {
+  opacity: 0;
+}
+
+body.running.flow-ready .hero-art-flow {
+  opacity: 1;
+  animation: cloud-breathe 2400ms ease-in-out infinite;
+}
+
+.hero-main {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  padding-top: 12px;
+}
+
+.hero-heading {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) 72px;
+  align-items: start;
+  gap: 8px;
+}
+
+.hero-copy {
+  grid-column: 2;
+  display: grid;
+  justify-items: center;
+  min-width: 0;
+  text-align: center;
+  transform: translateX(28px);
+}
+
+.title-art {
+  width: min(310px, 100%);
+  height: 34px;
+  background: #f8fafc;
+  -webkit-mask: url("/secret-tunnel-title.svg") center / contain no-repeat;
+  mask: url("/secret-tunnel-title.svg") center / contain no-repeat;
+}
+
+/* Seamless loop with an evenly paced palette. The colours form a closed cycle -
+   teal, blue, amber, red and back to teal - with every step the same width, so
+   the wrap from the last colour to the first blends at exactly the same rate as
+   every other transition instead of cutting. The cycle is laid out twice across
+   an image two container-widths wide, so shifting by one container width
+   advances exactly one cycle and the final frame equals the first.
+
+   The second declaration interpolates in oklab, which keeps the red-to-teal leg
+   vivid rather than passing through the grey-brown that sRGB mixing produces.
+   A webview too old to parse it simply ignores that line and keeps the sRGB
+   gradient above, so the title can never end up unpainted. */
+body.running .title-art {
+  background: linear-gradient(
+    90deg,
+    #0f766e 0%, #14b8a6 10%, #2563eb 20%, #f59e0b 30%, #dc2626 40%,
+    #0f766e 50%, #14b8a6 60%, #2563eb 70%, #f59e0b 80%, #dc2626 90%,
+    #0f766e 100%
+  );
+  background: linear-gradient(
+    90deg in oklab,
+    #0f766e 0%, #14b8a6 10%, #2563eb 20%, #f59e0b 30%, #dc2626 40%,
+    #0f766e 50%, #14b8a6 60%, #2563eb 70%, #f59e0b 80%, #dc2626 90%,
+    #0f766e 100%
+  );
+  background-size: 200% 100%;
+  animation: title-elements 4800ms linear infinite;
+}
+
+.tagline {
+  margin-top: 5px;
+  color: #cbd5e1;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+@keyframes title-elements {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    /* Exactly one container width, which is exactly one palette cycle. */
+    background-position: 100% 50%;
+  }
+}
+
+.hero-controls {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(210px, 1fr);
+  align-items: end;
+  gap: 10px;
+  margin-left: 178px;
+}
+
+.section {
+  padding: 10px 0;
+  border-top: 1px solid #273241;
+}
+
+.section.compact {
+  padding-bottom: 8px;
+}
+
+.zrok-setup {
+  padding: 8px 0 10px;
+}
+
+.zrok-setup[hidden] {
+  display: none;
+}
+
+.zrok-setup button {
+  width: 78px;
+}
+
+.zrok-hint {
+  margin: 6px 0 0;
+  font-size: 13px;
+}
+
+.zrok-hint a {
+  color: #2dd4bf;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.zrok-hint a:hover {
+  color: #5eead4;
+}
+
+.copy-row input {
+  flex: 1;
+}
+
+.copy-row button {
+  width: 70px;
+  flex: 0 0 auto;
+}
+
+.copy-row button.icon-button {
+  width: 34px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copy-row button.icon-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.button-row {
+  margin-top: 8px;
+}
+
+.button-row button {
+  flex: 1;
+}
+
+.folder-button {
+  width: 100%;
+  margin-bottom: 10px;
+  color: #ffffff;
+  border-color: #0f766e;
+  background: #0f766e;
+  box-shadow: 0 0 0 0 rgba(20, 184, 166, 0);
+}
+
+.folder-button:hover {
+  background: #115e59;
+}
+
+body.needs-folder .folder-button {
+  animation: folder-halo 1900ms ease-in-out infinite;
+}
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  height: 34px;
+  margin: 0;
+  color: #f8fafc;
+  font-weight: 500;
+}
+
+.switch-row input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.switch {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  flex: 0 0 auto;
+  border: 1px solid #4b5563;
+  border-radius: 999px;
+  background: #111827;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #9ca3af;
+  transition: transform 150ms ease, background 150ms ease;
+}
+
+.switch-row input:checked + .switch {
+  border-color: #0f766e;
+  background: #0f766e;
+}
+
+.switch-row input:checked + .switch::after {
+  transform: translateX(18px);
+  background: #ffffff;
+}
+
+.switch-row:has(input:focus-visible) .switch {
+  outline: 2px solid #0f766e;
+  outline-offset: 1px;
+}
+
+.mode-control {
+  display: grid;
+  gap: 5px;
+}
+
+.control-label {
+  color: #d1d5db;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 34px;
+  padding: 2px;
+  border: 1px solid #374151;
+  border-radius: 7px;
+  background: #111827;
+}
+
+.segment {
+  height: 28px;
+  border: 0;
+  border-radius: 5px;
+  padding: 0 8px;
+  background: transparent;
+  font-size: 14px;
+}
+
+.segment:hover {
+  background: #1f2937;
+}
+
+.segment.active {
+  color: #ffffff;
+  background: #0f766e;
+}
+
+.segment.active:hover {
+  background: #115e59;
+}
+
+.notice {
+  margin: 2px 0 6px;
+  padding: 9px 10px;
+  border: 1px solid #b45309;
+  border-radius: 7px;
+  color: #fed7aa;
+  background: #1f1308;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+body.zrok-needs-enable .notice {
+  display: none;
+}
+
+.diagnostics {
+  padding-bottom: 0;
+}
+
+.diag-row {
+  justify-content: space-between;
+  height: 24px;
+}
+
+.diag-row span {
+  color: #cbd5e1;
+}
+
+.diag-row strong {
+  color: #f8fafc;
+  font-size: 13px;
+}
+
+/* Health colouring. Colour is never the only signal: each value also states
+   the condition in words, so the row still reads correctly in greyscale or
+   with a colour vision deficiency. The bare classes are reused in the
+   instructions, where they name a state without being a live indicator. */
+.state-ok {
+  color: #34d399;
+}
+
+.state-warn {
+  color: #fbbf24;
+}
+
+.state-bad {
+  color: #f87171;
+}
+
+.diag-row strong::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 7px;
+  border-radius: 50%;
+  vertical-align: middle;
+  background: #64748b;
+}
+
+.diag-row strong.state-ok::before {
+  background: #34d399;
+}
+
+.diag-row strong.state-warn::before {
+  background: #fbbf24;
+}
+
+.diag-row strong.state-bad::before {
+  background: #f87171;
+}
+
+/* The reason and the Instructions link share one row: the window is a fixed
+   size, so a separate row for the link would push it out of view whenever a
+   red state also needs explaining. */
+.diag-footer {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.diag-footer .diag-reason {
+  flex: 1;
+  margin: 0;
+  /* The window cannot grow, so a long backend message is clamped rather than
+     pushing the Instructions link out of view. The full text stays available
+     as the title attribute. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.diag-links {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 14px;
+  margin-left: auto;
+}
+
+.diag-footer .link-button {
+  flex: 0 0 auto;
+  line-height: 1.35;
+}
+
+/* A text-styled button: used for links, since the CSP forbids navigation and
+   every external URL is opened through the backend instead. */
+.link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #5eead4;
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  color: #99f6e4;
+}
+
+.sheet {
+  width: 520px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 48px);
+  padding: 0;
+  border: 1px solid #1f2937;
+  border-radius: 12px;
+  background: #111827;
+  color: #e5e7eb;
+}
+
+.sheet::backdrop {
+  background: rgba(2, 6, 23, 0.72);
+}
+
+.sheet-head,
+.sheet-foot {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+}
+
+.sheet-head {
+  justify-content: space-between;
+  border-bottom: 1px solid #1f2937;
+}
+
+.sheet-head h2 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.sheet-foot {
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid #1f2937;
+}
+
+.sheet-foot .primary {
+  background: #0f766e;
+}
+
+.icon-button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: #94a3b8;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  background: #1f2937;
+  color: #e5e7eb;
+}
+
+/* The only scrolling region in the app: the window is fixed size, so the steps
+   scroll rather than overflowing out of view. */
+.sheet-body {
+  max-height: 380px;
+  overflow-y: auto;
+  padding: 4px 16px 12px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.sheet-body h3 {
+  margin: 14px 0 6px;
+  font-size: 13px;
+  color: #5eead4;
+}
+
+.sheet-body ol,
+.sheet-body ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.sheet-body li {
+  margin-bottom: 4px;
+}
+
+.sheet-body p {
+  margin: 6px 0;
+}
+
+.sheet-note {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+/* The one actionable sentence explaining a red row. */
+.diag-reason {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.35;
+  color: #fca5a5;
+}
+
+.diag-reason[hidden] {
+  display: none;
+}
+
+@keyframes cloud-breathe {
+  0%,
+  100% {
+    transform: translate(-5px, -4px) scale(0.985);
+  }
+
+  50% {
+    transform: translate(-5px, -4px) scale(1.018);
+  }
+}
+
+@keyframes folder-halo {
+  0%,
+  100% {
+    border-color: #0f766e;
+    box-shadow: 0 0 0 0 rgba(20, 184, 166, 0);
+  }
+
+  45% {
+    border-color: #2dd4bf;
+    box-shadow: 0 0 0 6px rgba(20, 184, 166, 0.18), 0 0 18px rgba(20, 184, 166, 0.28);
+  }
+}
+
+/* Inline literals in the About text: hostnames, ports, package names. */
+.sheet-body code {
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: #0b1220;
+  color: #7dd3fc;
+  font-size: 12px;
+}
