@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Secret Tunnel — give ChatGPT one folder on your computer</title>
+    <title>Secret Tunnel v2 — give ChatGPT one folder on your computer</title>
     <meta
       name="description"
       content="A small desktop app that lets ChatGPT read, and optionally edit, one folder on your machine through a stable private URL."
@@ -127,6 +127,19 @@
         vertical-align: middle;
       }
       .badge.ok { background: #064e3b; color: var(--ok); }
+      .version-chip {
+        display: inline-block;
+        margin-bottom: 10px;
+        padding: 2px 12px;
+        border: 1px solid var(--accent-deep);
+        border-radius: 999px;
+        background: #042f2e;
+        color: var(--accent);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+      .version-chip a { color: inherit; }
       .badge.beta { background: #422006; color: var(--warn); }
       .note {
         margin: 18px 0;
@@ -158,13 +171,14 @@
   <body>
     <div class="wrap">
       <header>
-        <h1 class="sr-only">Secret Tunnel</h1>
+        <h1 class="sr-only">Secret Tunnel v2</h1>
         <img
           class="hero-logo"
           src="secret-tunnel-cloud.svg"
           alt="A local computer connected to a cloud through a tunnel"
         />
         <div class="title-art" role="img" aria-label="Secret Tunnel"></div>
+        <p class="version-chip">version 2</p>
         <p class="tagline">Give ChatGPT one folder on your computer.</p>
       </header>
 
@@ -175,34 +189,19 @@
       </p>
 
       <h2>Download</h2>
-      <div class="downloads">
-        <a
-          class="dl primary"
-          href="https://github.com/GeorgeFejer91/SecretTunnel/releases/latest/download/SecretTunnel-windows-x64-setup.exe"
-        >
-          <div class="os">Windows<span class="badge ok">tested</span></div>
-          <div class="file">64-bit installer (.exe)</div>
-        </a>
-        <a
-          class="dl"
-          href="https://github.com/GeorgeFejer91/SecretTunnel/releases/latest/download/SecretTunnel-macos-arm64.dmg"
-        >
-          <div class="os">macOS · Apple Silicon<span class="badge beta">beta</span></div>
-          <div class="file">M1 and newer (.dmg)</div>
-        </a>
-        <a
-          class="dl"
-          href="https://github.com/GeorgeFejer91/SecretTunnel/releases/latest/download/SecretTunnel-macos-x64.dmg"
-        >
-          <div class="os">macOS · Intel<span class="badge beta">beta</span></div>
-          <div class="file">Intel Macs (.dmg)</div>
-        </a>
+      <div class="note">
+        <strong>Version 2 has no installer yet.</strong> The source is published here and builds
+        with <code>npm run tauri build</code> from <code>app/</code>. If you want a ready-made
+        build today, use
+        <a href="https://georgefejer91.github.io/SecretTunnel/">Secret Tunnel v1</a>, which ships
+        signed-free installers for Windows and macOS.
       </div>
       <p style="margin-top: 14px; font-size: 14px">
-        All releases, checksums and source:
-        <a href="https://github.com/GeorgeFejer91/SecretTunnel/releases/latest">releases page</a> ·
-        <a href="https://github.com/GeorgeFejer91/SecretTunnel">source code</a>. Every release ships a
-        <code>SHA256SUMS.txt</code> so you can verify what you downloaded.
+        Source code:
+        <a href="https://github.com/GeorgeFejer91/secret-tunnel">github.com/GeorgeFejer91/secret-tunnel</a>.
+        Previous version:
+        <a href="https://georgefejer91.github.io/SecretTunnel/">Secret Tunnel v1</a>
+        (<a href="https://github.com/GeorgeFejer91/SecretTunnel/releases/latest">installers</a>).
       </p>
 
       <div class="note">
@@ -302,10 +301,10 @@
         </p>
         <p>
           <strong>Licence.</strong> Secret Tunnel is
-          <a href="https://github.com/GeorgeFejer91/SecretTunnel/blob/main/LICENSE">MIT licensed</a>.
+          <a href="https://github.com/GeorgeFejer91/secret-tunnel/blob/main/LICENSE">MIT licensed</a>.
           The bundled components keep their own licences — gpt-repo-mcp (MIT), zrok (Apache-2.0)
           and Node.js (MIT) — listed in
-          <a href="https://github.com/GeorgeFejer91/SecretTunnel/blob/main/THIRD-PARTY-NOTICES.md">THIRD-PARTY-NOTICES</a>.
+          <a href="https://github.com/GeorgeFejer91/secret-tunnel/blob/main/THIRD-PARTY-NOTICES.md">THIRD-PARTY-NOTICES</a>.
         </p>
       </footer>
     </div>
