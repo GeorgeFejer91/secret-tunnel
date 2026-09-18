@@ -1,0 +1,40 @@
+{
+  "name": "gpt-repo-mcp",
+  "upstreamRepoUrl": "https://github.com/CAHN91/gpt-repo-mcp",
+  "upstreamCommit": "986f2135f00959f8e0d214ed8d173a7054f4cea1",
+  "forkRepoUrl": "https://github.com/GeorgeFejer91/gpt-repo-mcp",
+  "forkBranch": "sandbox-containment-hardening",
+  "forkCommit": "93274e2",
+  "license": "MIT",
+  "copyright": "Copyright (c) 2026 Promptiva AB",
+  "vendoredAt": "2026-09-17",
+  "modifications": [
+    "Registration honours GPT_REPO_READ_ONLY_SURFACE=1 by filtering the tool catalogue to read-only tools, so write-capable tools are never registered and cannot appear in tools/list.",
+    "Containment checks reject a relative() result that is absolute. On Windows any cross-drive pair produces one, and it contains no '..', so a different drive was previously reported as inside the repository (path-sandbox.ts isWithin, file-writer.ts assertWithinRoot).",
+    "validateRepoPath rejects NUL bytes, UNC paths on POSIX hosts, and drive-relative paths such as 'C:file' that win32.isAbsolute reports as relative but Windows resolves outside the repository.",
+    "Literal find/replace inserts the replacement verbatim instead of expanding the substitution patterns that String.prototype.replace recognises in a string replacement (file-writer.ts passes a function).",
+    "Adds github_status/github_plan/github_apply, registered outside the tool catalogue. They call the Secret Tunnel desktop app over its loopback broker rather than touching the repository, register only when the broker environment is present, and expose no approval route."
+  ],
+  "localMcpBridgeOverlay": {
+    "recordedAt": "2026-09-17",
+    "workstream": "mcp-integration-05",
+    "forkPublished": false,
+    "description": "Repository-maintained hardening of the existing loopback GitHub bridge; not attributed to forkCommit until separately integrated and verified.",
+    "sha256": {
+      "src/github-bridge.ts": "9e09c4f8f21305b8d95ffc1992b052a234a35a3f343b8538d4468cbebc2459f4",
+      "src/github-broker-client.mjs": "d29dd22868543ec8f13a78bfedee1425dad5c2bce1aa4070ddd453e56c14729f",
+      "src/github-broker-client.d.mts": "075139c8f4794e13bdf827f6e9e1ac4b5dce47d4c380e038b2b07f947c92ac77"
+    },
+    "verification": "96 isolated client/handler checks passed; real SDK/type gate, native broker and packaged app remain separate unverified gates.",
+    "releaseRequirement": "Record and verify the overlay plus actual bundle hashes, or integrate it into a full reviewed fork revision before claiming exact fork provenance. Existing prepare code does not automatically enforce this overlay record."
+  },
+  "excludedFromVendor": [
+    "node_modules",
+    "dist",
+    "tests",
+    "docs",
+    "scripts",
+    "security",
+    ".git"
+  ]
+}

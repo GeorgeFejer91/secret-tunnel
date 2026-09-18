@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secret Tunnel · Actions</title>
+  <link rel="stylesheet" href="/src/actions.css" />
+  <script type="module" src="/src/actions.ts" defer></script>
+</head>
+<body>
+  <main>
+    <header>
+      <div><p class="eyebrow">SECRET TUNNEL</p><h1>Actions</h1></div>
+      <div class="toolbar"><button id="initialize">Set up inbox</button><button id="copy-template">Copy template</button><button id="refresh">Refresh</button></div>
+    </header>
+    <p id="workspace" class="path">Choose a project folder in the main window.</p>
+    <p class="intro">One approval per substantial work pack, not per command. Review up to five packs at a time. The shared vehicle runs the steps and records their verification.</p>
+    <p id="message" role="status" aria-live="polite"></p>
+    <section class="controls" aria-label="Queue controls">
+      <label><input id="auto-checks" type="checkbox" /> Auto-run built-in checks only</label>
+      <span id="policy-status">Off. Scripts and executables always require approval.</span>
+      <div class="toolbar"><button id="pause">Pause queue</button><button id="resume">Resume approved batch</button><button id="cancel" class="danger">Cancel outstanding work</button></div>
+    </section>
+    <section aria-labelledby="running-title"><h2 id="running-title">Execution</h2><div id="running" aria-live="polite"></div></section>
+    <section aria-labelledby="pending-title">
+      <div class="section-heading"><h2 id="pending-title">Review buffer <span id="count">0 / 5</span></h2><div class="toolbar"><button id="approve-selected" disabled>Review selected</button><button id="approve-buffer">Review next five</button></div></div>
+      <p id="backlog"></p><div id="pending"></div><div id="errors" role="alert"></div>
+    </section>
+    <section aria-labelledby="history-title"><h2 id="history-title">Recent receipts</h2><div id="history"></div></section>
+    <footer>Closing this Actions window does not stop an approved pack. Cancel outstanding work here, or close the main Secret Tunnel window. Custom code runs as your user and is not sandboxed. Expected effects and input hashes are not permission enforcement.</footer>
+  </main>
+  <dialog id="review-dialog">
+    <h2 id="review-title">Review exact action packs</h2>
+    <p id="review-warning" class="warning"></p>
+    <div id="review-content"></div>
+    <div class="dialog-buttons"><button id="dismiss-review">Back</button><button id="confirm-review" class="primary">Execute approved packs</button></div>
+  </dialog>
+  <dialog id="receipt-dialog"><h2>Runner receipt</h2><pre id="receipt-content"></pre><div class="dialog-buttons"><button id="close-receipt">Close</button></div></dialog>
+</body>
+</html>

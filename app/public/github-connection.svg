@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"
+     class="gh-connection" data-gh-state="disconnected"
+     role="img" aria-labelledby="gh-title gh-description">
+  <title id="gh-title">GitHub connection status</title>
+  <desc id="gh-description">State-driven GitHub account icon. Muted with a dash when disconnected; mint green with a check and soft breathing glow when connected; violet while checking; amber when attention is needed.</desc>
+  <style><![CDATA[
+
+/* State-driven asset. No sign-in logic, timers, scripts or external resources.
+   Inline SVG: change data-gh-state on the root.
+   Standalone: open this file with #connected, #connecting or #error.
+   A verified GitHub account, not a running MCP tunnel, earns the green state. */
+.gh-connection { overflow: visible; }
+.gh-connection .gh-shell {
+  fill: #1b1729; stroke: #50455f; stroke-width: 1;
+  transition: fill 360ms ease, stroke 360ms ease;
+}
+.gh-connection .gh-mark {
+  fill: #aaa3ba;
+  transition: fill 360ms ease;
+}
+.gh-connection .gh-halo {
+  opacity: 0;
+  transition: opacity 420ms ease;
+}
+.gh-connection .gh-breathe {
+  fill: #34d399; filter: blur(4px); opacity: .42;
+  transform-origin: 32px 32px;
+  animation: gh-breathe 2.8s ease-in-out infinite paused;
+}
+.gh-connection .gh-orbit {
+  fill: none; stroke: #c4b5fd; stroke-width: 1.6;
+  stroke-linecap: round; stroke-dasharray: 18 82; opacity: 0;
+  transform-origin: 32px 32px;
+  animation: gh-orbit 1.6s linear infinite paused;
+  transition: opacity 220ms ease;
+}
+.gh-connection .gh-badge {
+  fill: #221c31; stroke: #746986; stroke-width: 1;
+  transition: fill 360ms ease, stroke 360ms ease;
+}
+.gh-connection .gh-check, .gh-connection .gh-off, .gh-connection .gh-error {
+  fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  transition: opacity 240ms ease, stroke-dashoffset 320ms ease;
+}
+.gh-connection .gh-check {
+  stroke: #10372b; opacity: 0; stroke-dasharray: 1; stroke-dashoffset: 1;
+}
+.gh-connection .gh-off { stroke: #bcb4cb; opacity: 1; }
+.gh-connection .gh-error { stroke: #342308; opacity: 0; }
+.gh-connection[data-gh-state="connected"] .gh-shell,
+.gh-connection #connected:target ~ .gh-art .gh-shell { fill: #142e29; stroke: #378b70; }
+.gh-connection[data-gh-state="connected"] .gh-mark,
+.gh-connection #connected:target ~ .gh-art .gh-mark { fill: #86efbf; }
+.gh-connection[data-gh-state="connected"] .gh-halo,
+.gh-connection #connected:target ~ .gh-art .gh-halo { opacity: 1; }
+.gh-connection[data-gh-state="connected"] .gh-breathe,
+.gh-connection #connected:target ~ .gh-art .gh-breathe { animation-play-state: running; }
+.gh-connection[data-gh-state="connected"] .gh-badge,
+.gh-connection #connected:target ~ .gh-art .gh-badge { fill: #86efbf; stroke: #b4ffda; }
+.gh-connection[data-gh-state="connected"] .gh-check,
+.gh-connection #connected:target ~ .gh-art .gh-check { opacity: 1; stroke-dashoffset: 0; }
+.gh-connection[data-gh-state="connected"] .gh-off,
+.gh-connection #connected:target ~ .gh-art .gh-off { opacity: 0; }
+.gh-connection[data-gh-state="connecting"] .gh-shell,
+.gh-connection #connecting:target ~ .gh-art .gh-shell { fill: #241c38; stroke: #8062ad; }
+.gh-connection[data-gh-state="connecting"] .gh-mark,
+.gh-connection #connecting:target ~ .gh-art .gh-mark { fill: #c4b5fd; }
+.gh-connection[data-gh-state="connecting"] .gh-orbit,
+.gh-connection #connecting:target ~ .gh-art .gh-orbit { opacity: 1; animation-play-state: running; }
+.gh-connection[data-gh-state="connecting"] .gh-off,
+.gh-connection #connecting:target ~ .gh-art .gh-off { opacity: 0; }
+.gh-connection[data-gh-state="error"] .gh-shell,
+.gh-connection #error:target ~ .gh-art .gh-shell { fill: #302515; stroke: #a47c35; }
+.gh-connection[data-gh-state="error"] .gh-mark,
+.gh-connection #error:target ~ .gh-art .gh-mark { fill: #fcd34d; }
+.gh-connection[data-gh-state="error"] .gh-badge,
+.gh-connection #error:target ~ .gh-art .gh-badge { fill: #fcd34d; stroke: #ffe6a1; }
+.gh-connection[data-gh-state="error"] .gh-error,
+.gh-connection #error:target ~ .gh-art .gh-error { opacity: 1; }
+.gh-connection[data-gh-state="error"] .gh-off,
+.gh-connection #error:target ~ .gh-art .gh-off { opacity: 0; }
+
+@keyframes gh-breathe {
+  0%, 100% { opacity: .24; transform: scale(.94); }
+  50% { opacity: .48; transform: scale(1.07); }
+}
+@keyframes gh-orbit { to { transform: rotate(360deg); } }
+
+/* Color and badge shapes remain legible without animation. */
+@media (prefers-reduced-motion: reduce) {
+  .gh-connection * { animation: none !important; transition: none !important; }
+}
+@media (forced-colors: active) {
+  .gh-connection .gh-shell, .gh-connection .gh-badge {
+    fill: Canvas !important; stroke: CanvasText !important;
+  }
+  .gh-connection .gh-mark { fill: CanvasText !important; }
+  .gh-connection .gh-check, .gh-connection .gh-off, .gh-connection .gh-error,
+  .gh-connection .gh-orbit { stroke: CanvasText !important; }
+  .gh-connection .gh-halo { display: none; }
+}
+  ]]></style>
+  <g id="connected" />
+  <g id="connecting" />
+  <g id="error" />
+  <g class="gh-art">
+    <g class="gh-halo"><rect class="gh-breathe" x="8" y="8" width="48" height="48" rx="16" /></g>
+    <rect class="gh-shell" x="7" y="7" width="50" height="50" rx="15" />
+    <path d="M19 10h26" stroke="#fff" stroke-opacity=".07" stroke-linecap="round" />
+    <circle class="gh-orbit" cx="32" cy="32" r="23" pathLength="100" />
+    <g class="gh-mark" transform="translate(16 16) scale(2)">
+      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
+    </g>
+    <circle class="gh-badge" cx="50" cy="50" r="7.5" />
+    <path class="gh-check" d="m46.6 50 2.4 2.5 4.5-5.1" pathLength="1" />
+    <path class="gh-off" d="M47 50h6" />
+    <path class="gh-error" d="M50 46.5v3.4m0 2.4v.2" />
+  </g>
+</svg>
