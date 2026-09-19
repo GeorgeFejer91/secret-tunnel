@@ -1,0 +1,56 @@
+name: Storage module checks
+
+# build.yml only runs for main, so a pull request into v3 otherwise has no build
+# evidence behind it at all. This covers the same ground for the branch the
+# Storage Box module is developed on, scoped to the paths it can break.
+
+on:
+  pull_request:
+    branches: [v3]
+    paths:
+      - 'app/storage/**'
+      - 'app/src/storage.ts'
+      - 'app/src/main.ts'
+      - 'app/src/styles.css'
+      - 'app/index.html'
+      - 'app/scripts/**'
+      - 'app/src-tauri/**'
+      - 'app/vendor/gpt-repo-mcp/**'
+      - '.github/workflows/storage-module.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: storage-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: dtolnay/rust-toolchain@stable
+
+      # The worker tests need no install, so they report first and fastest.
+      - run: node --test storage/worker.test.mjs storage/integration.test.mjs
+      - run: npm ci
+      - run: npm run prepare:runtime
+        env:
+          SECRET_TUNNEL_REQUIRE_CLEAN_MCP_SOURCE: '1'
+      - run: npm run build
+      - run: npm run smoke:ui
+
+      - name: Native checks
+        working-directory: app/src-tauri
+        run: |
+          cargo check --locked --all-targets
+          cargo test --locked

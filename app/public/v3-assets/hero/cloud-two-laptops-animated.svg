@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Illustration of flow from a cloud to two laptops">
+<g fill="none" stroke="#d1d5db" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M308.0 147.7 L306.1 157.4 L301.4 164.0 L293.2 170.3 L283.5 175.2 L260.7 183.0 L214.3 194.4 L194.9 199.9 L179.0 205.8 L166.7 212.2 L155.9 220.6 L148.3 230.1 L143.6 241.0 L142.0 252.7 L166.0 253.3 L167.1 246.1 L170.1 240.6 L176.7 234.4 L185.2 229.4 L196.1 224.8 L208.7 220.7 L264.7 206.8 L286.2 200.0 L297.3 195.3 L305.8 190.7 L313.5 185.4 L320.0 179.2 L326.5 185.4 L334.2 190.7 L342.7 195.3 L353.8 200.0 L375.3 206.8 L431.3 220.7 L443.9 224.8 L454.8 229.4 L463.3 234.4 L469.9 240.6 L472.9 246.1 L474.0 253.3 L498.0 252.7 L497.5 245.8 L495.7 238.7 L490.1 227.6 L485.7 222.2 L480.8 217.6 L467.6 209.0 L456.6 203.9 L442.7 199.1 L379.3 183.0 L366.2 179.0 L354.7 174.5 L344.1 168.5 L337.0 162.2 L333.1 155.3 L332.0 147.7 L308.0 147.7Z" stroke="#737994" stroke-width="1.4"/>
+  <path d="M285 154h-29a34 34 0 0 1-4-68 52 52 0 0 1 100-8 38 38 0 0 1 24-8 42 42 0 0 1 0 84h-21"/>
+  <path d="M285 154v-33a35 35 0 0 1 70 0v33"/>
+  <path d="M301 151v-30a19 19 0 0 1 38 0v30" stroke="#a5b4fc" stroke-width="1.6"/>
+  <path d="M319 125h2m-2 8h2m-2 8h2" stroke="#737994" stroke-width="1.6"/>
+  <g>
+    <path d="M147 227h-52a5 5 0 0 0-5 5v56h128v-56a5 5 0 0 0-5-5h-18"/>
+    <path d="m90 288-14 17a2 2 0 0 0 1.5 3h153a2 2 0 0 0 1.5-3l-14-17M140 300h28"/>
+    <path d="M106 238v38h96v-38M143 274v-14a11 11 0 0 1 22 0v14" stroke="#737994" stroke-width="1.4"/>
+  </g>
+  <g transform="translate(640 0) scale(-1 1)">
+    <path d="M147 227h-52a5 5 0 0 0-5 5v56h128v-56a5 5 0 0 0-5-5h-18"/>
+    <path d="m90 288-14 17a2 2 0 0 0 1.5 3h153a2 2 0 0 0 1.5-3l-14-17M140 300h28"/>
+    <path d="M106 238v38h96v-38M143 274v-14a11 11 0 0 1 22 0v14" stroke="#737994" stroke-width="1.4"/>
+  </g>
+</g>
+<style>
+.st-v3-flow { stroke-dasharray: 7 17; animation: st-v3-outbound 1.6s linear infinite; }
+@keyframes st-v3-outbound { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -24; } }
+@media (prefers-reduced-motion: reduce) { .st-v3-flow { animation: none; } }
+svg[data-motion="paused"] .st-v3-flow { animation-play-state: paused; }
+</style>
+<g fill="none" stroke="#f8fafc" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+  <path class="st-v3-flow" d="M320 148C320 215 154 188 154 253"/>
+  <path class="st-v3-flow" d="M320 148C320 215 486 188 486 253"/>
+</g>
+</svg>

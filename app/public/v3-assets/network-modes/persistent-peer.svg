@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 96" color="#a5b4fc" role="img" aria-label="Persistent peer, until revoked">
+  <title>Persistent peer, until revoked</title>
+  <rect class="mode-frame" x="1" y="1" width="178" height="94" rx="7" fill="none" stroke="currentColor" stroke-opacity=".45"/>
+  <g class="mode-glyph" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="40" y="25" width="27" height="20" rx="2"/>
+    <path d="m40 45-4 5h35l-4-5m-18 3h9"/>
+    <rect x="113" y="25" width="27" height="20" rx="2"/>
+    <path d="m113 45-4 5h35l-4-5m-18 3h9M67 35h10m26 0h10"/>
+    <path d="M90 35c-5-8-12-8-12 0s7 8 12 0 12-8 12 0-7 8-12 0Z"/>
+  </g>
+  <g class="mode-copy" font-family="system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" text-anchor="middle">
+    <text x="90" y="69" font-size="13" font-weight="600" fill="#f8fafc">Persistent peer</text>
+    <text x="90" y="85" font-size="11.5" fill="#aab0c5">Until revoked</text>
+  </g>
+</svg>

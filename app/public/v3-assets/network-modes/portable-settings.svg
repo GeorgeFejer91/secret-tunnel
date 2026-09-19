@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 96" color="#a5b4fc" role="img" aria-label="Copy portable settings">
+  <title>Copy portable settings</title>
+  <rect class="mode-frame" x="1" y="1" width="178" height="94" rx="7" fill="none" stroke="currentColor" stroke-opacity=".45"/>
+  <g class="mode-glyph" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="52" y="14" width="24" height="32" rx="3"/>
+    <path d="M58 25h12m-12 7h12"/>
+    <rect x="104" y="22" width="24" height="32" rx="3"/>
+    <path d="M110 33h12m-12 7h12M83 34h15m-5-5 5 5-5 5"/>
+  </g>
+  <g class="mode-copy" font-family="system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" text-anchor="middle">
+    <text x="90" y="69" font-size="13" font-weight="600" fill="#f8fafc">Copy portable</text>
+    <text x="90" y="85" font-size="11.5" fill="#aab0c5">settings</text>
+  </g>
+</svg>

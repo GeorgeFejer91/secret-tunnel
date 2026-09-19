@@ -1,0 +1,26 @@
+# Release installers are large and are distributed as GitHub Release assets.
+outputs/installers/*.msi
+outputs/installers/*.exe
+outputs/installers/*.dmg
+outputs/installers/*.AppImage
+outputs/installers/*.deb
+outputs/installers/*.rpm
+
+# Generated verification/evidence. Keep local, not in the repo.
+outputs/actions-verification/
+outputs/v2-verification/
+
+# Local MCP receipts/patchsets are runtime state, not source.
+.chatgpt/
+
+# Retired AI orchestration/history is archived elsewhere.
+For-AI/
+
+# Tauri mobile icon sets are generated and unused by the desktop bundle.
+app/src-tauri/icons/android/
+app/src-tauri/icons/ios/
+
+# Local backup of real production configuration (contains secrets).
+.local-backup/
+
+# The app/ subtree carries its own .gitignore for node_modules, dist, target, etc.

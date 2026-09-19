@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" aria-hidden="true">
+<style>
+.st-v3-flow { stroke-dasharray: 7 17; animation: st-v3-outbound 1.6s linear infinite; }
+@keyframes st-v3-outbound { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -24; } }
+@media (prefers-reduced-motion: reduce) { .st-v3-flow { animation: none; } }
+svg[data-motion="paused"] .st-v3-flow { animation-play-state: paused; }
+</style>
+<g fill="none" stroke="#f8fafc" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+  <path class="st-v3-flow" d="M320 148C320 215 154 188 154 253"/>
+  <path class="st-v3-flow" d="M320 148C320 215 486 188 486 253"/>
+</g>
+</svg>
