@@ -1,0 +1,971 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/src/styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Secret Tunnel</title>
+    <script type="module" src="/src/main.ts" defer></script>
+  </head>
+
+  <body>
+    <div class="workbench">
+      <main class="shell" data-tauri-drag-region="deep">
+      <div class="window-controls" role="group" aria-label="Window controls">
+        <button id="window-minimize" class="window-control" type="button" title="Minimize" aria-label="Minimize">
+          <span aria-hidden="true">−</span>
+        </button>
+        <button id="window-close" class="window-control window-close" type="button" title="Close" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+
+      <div id="panel-overview" class="tab-panel" role="tabpanel" aria-labelledby="tab-overview">
+        <section class="hero">
+          <img
+            class="hero-art hero-art-static"
+            src="/secret-tunnel-cloud.svg"
+            alt="Local computer connected to a cloud through a tunnel"
+          />
+          <img
+            id="hero-flow-art"
+            class="hero-art hero-art-flow"
+            data-src="/secret-tunnel-flow.svg"
+            alt=""
+            aria-hidden="true"
+          />
+          <div class="hero-main">
+            <div class="hero-heading">
+              <div class="hero-copy">
+                <h1 class="sr-only">Secret Tunnel</h1>
+                <div class="title-row">
+                  <div class="title-art" role="img" aria-label="Secret Tunnel"></div>
+                  <span class="version-chip">v4</span>
+                </div>
+                <p class="tagline">Through the mountain! Secret, secret, secret, secret tunnel!</p>
+              </div>
+            </div>
+            <div class="hero-controls">
+              <label class="switch-row">
+                <span>Open at startup</span>
+                <input id="autostart" type="checkbox" />
+                <span class="switch" aria-hidden="true"></span>
+              </label>
+              <div class="mode-control">
+                <span id="access-mode-label" class="control-label">GPT tools</span>
+                <div class="segmented" role="group" aria-labelledby="access-mode-label">
+                  <button id="mode-read" class="segment" type="button" aria-pressed="true">Read</button>
+                  <button id="mode-write" class="segment" type="button" aria-pressed="false">Read+write</button>
+                  <button
+                    id="mode-github"
+                    class="segment"
+                    type="button"
+                    aria-pressed="false"
+                    title="Read+write, plus let ChatGPT propose GitHub commits and pushes for you to approve"
+                  >
+                    +GitHub
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <label for="mcp-url">MCP Address</label>
+          <div class="copy-row">
+            <input id="mcp-url" readonly spellcheck="false" />
+            <button id="copy-url" type="button">Copy</button>
+            <button
+              id="regenerate-url"
+              class="icon-button"
+              type="button"
+              title="Generate new URL"
+              aria-label="Generate new URL"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+                <path d="M21 3v5h-5" />
+                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+                <path d="M8 16H3v5" />
+              </svg>
+            </button>
+          </div>
+        </section>
+
+        <section class="section">
+          <button id="folder-picker" class="folder-button" type="button">
+            Select access folder
+          </button>
+          <label for="folder-path">Selected folder</label>
+          <input id="folder-path" spellcheck="false" placeholder="No folder selected" />
+          <div class="button-row">
+            <button id="paste-folder" type="button">Paste</button>
+            <button id="copy-folder" type="button">Copy</button>
+            <button id="save-folder" type="button">Use path</button>
+          </div>
+        </section>
+
+        <section id="zrok-setup" class="section zrok-setup" hidden>
+          <label for="zrok-token">zrok token</label>
+          <div class="copy-row">
+            <input id="zrok-token" type="password" autocomplete="off" spellcheck="false" />
+            <button id="enable-zrok" type="button">Enable</button>
+          </div>
+          <p class="zrok-hint"><a id="get-token-link" href="#">Get token</a></p>
+        </section>
+
+        <section class="notice">
+          Keep this app open while ChatGPT uses this folder. Pick a project folder only; never a drive root, home folder, or system folder.
+        </section>
+
+        <section class="section diagnostics">
+          <div class="diag-row">
+            <span>Status</span>
+            <strong id="status-line" data-fit>Loading</strong>
+          </div>
+          <div class="diag-row">
+            <span>zrok2</span>
+            <strong id="zrok-state" data-fit>Checking</strong>
+          </div>
+          <div class="diag-row">
+            <span>gpt-repo-mcp</span>
+            <strong id="mcp-state" data-fit>Checking</strong>
+          </div>
+          <div class="diag-row">
+            <span>ChatGPT can reach it</span>
+            <strong id="public-state" data-fit>Checking</strong>
+          </div>
+          <div class="diag-footer">
+            <p id="diag-reason" class="diag-reason" hidden></p>
+            <div class="diag-links">
+              <button id="open-actions" type="button" class="link-button">Actions</button>
+              <button id="open-about" type="button" class="link-button">About</button>
+              <button id="open-instructions" type="button" class="link-button">Instructions</button>
+              <button
+                id="github-connect"
+                type="button"
+                class="link-button gh-button"
+                data-state="disconnected"
+                title="Connect your GitHub account"
+                aria-label="Connect your GitHub account"
+              >
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"
+                     class="gh-connection" data-gh-state="disconnected">
+                  <style><![CDATA[
+
+                /* State-driven asset. No sign-in logic, timers, scripts or external resources.
+                   Inline SVG: change data-gh-state on the root.
+                   Standalone: open this file with #gh-state-connected, #gh-state-connecting or #gh-state-error.
+                   A verified GitHub account, not a running MCP tunnel, earns the green state. */
+                .gh-connection { overflow: visible; }
+                .gh-connection .gh-shell {
+                  fill: #171a2e; stroke: #494f6b; stroke-width: 1;
+                  transition: fill 360ms ease, stroke 360ms ease;
+                }
+                .gh-connection .gh-mark {
+                  fill: #a5a8c4;
+                  transition: fill 360ms ease;
+                }
+                .gh-connection .gh-halo {
+                  opacity: 0;
+                  transition: opacity 420ms ease;
+                }
+                .gh-connection .gh-breathe {
+                  fill: #34d399; filter: blur(4px); opacity: .42;
+                  transform-origin: 32px 32px;
+                  animation: gh-breathe 2.8s ease-in-out infinite paused;
+                }
+                .gh-connection .gh-orbit {
+                  fill: none; stroke: #a5b4fc; stroke-width: 1.6;
+                  stroke-linecap: round; stroke-dasharray: 18 82; opacity: 0;
+                  transform-origin: 32px 32px;
+                  animation: gh-orbit 1.6s linear infinite paused;
+                  transition: opacity 220ms ease;
+                }
+                .gh-connection .gh-badge {
+                  fill: #1d2038; stroke: #6b7095; stroke-width: 1;
+                  transition: fill 360ms ease, stroke 360ms ease;
+                }
+                .gh-connection .gh-check, .gh-connection .gh-off, .gh-connection .gh-error {
+                  fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+                  transition: opacity 240ms ease, stroke-dashoffset 320ms ease;
+                }
+                .gh-connection .gh-check {
+                  stroke: #10372b; opacity: 0; stroke-dasharray: 1; stroke-dashoffset: 1;
+                }
+                .gh-connection .gh-off { stroke: #b6b9d2; opacity: 1; }
+                .gh-connection .gh-error { stroke: #342308; opacity: 0; }
+                .gh-connection[data-gh-state="connected"] .gh-shell,
+                .gh-connection #gh-state-connected:target ~ .gh-art .gh-shell { fill: #142e29; stroke: #378b70; }
+                .gh-connection[data-gh-state="connected"] .gh-mark,
+                .gh-connection #gh-state-connected:target ~ .gh-art .gh-mark { fill: #86efbf; }
+                .gh-connection[data-gh-state="connected"] .gh-halo,
+                .gh-connection #gh-state-connected:target ~ .gh-art .gh-halo { opacity: 1; }
+                .gh-connection[data-gh-state="connected"] .gh-breathe,
+                .gh-connection #gh-state-connected:target ~ .gh-art .gh-breathe { animation-play-state: running; }
+                .gh-connection[data-gh-state="connected"] .gh-badge,
+                .gh-connection #gh-state-connected:target ~ .gh-art .gh-badge { fill: #86efbf; stroke: #b4ffda; }
+                .gh-connection[data-gh-state="connected"] .gh-check,
+                .gh-connection #gh-state-connected:target ~ .gh-art .gh-check { opacity: 1; stroke-dashoffset: 0; }
+                .gh-connection[data-gh-state="connected"] .gh-off,
+                .gh-connection #gh-state-connected:target ~ .gh-art .gh-off { opacity: 0; }
+                .gh-connection[data-gh-state="connecting"] .gh-shell,
+                .gh-connection #gh-state-connecting:target ~ .gh-art .gh-shell { fill: #1f2240; stroke: #7274b8; }
+                .gh-connection[data-gh-state="connecting"] .gh-mark,
+                .gh-connection #gh-state-connecting:target ~ .gh-art .gh-mark { fill: #a5b4fc; }
+                .gh-connection[data-gh-state="connecting"] .gh-orbit,
+                .gh-connection #gh-state-connecting:target ~ .gh-art .gh-orbit { opacity: 1; animation-play-state: running; }
+                .gh-connection[data-gh-state="connecting"] .gh-off,
+                .gh-connection #gh-state-connecting:target ~ .gh-art .gh-off { opacity: 0; }
+                .gh-connection[data-gh-state="error"] .gh-shell,
+                .gh-connection #gh-state-error:target ~ .gh-art .gh-shell { fill: #302515; stroke: #a47c35; }
+                .gh-connection[data-gh-state="error"] .gh-mark,
+                .gh-connection #gh-state-error:target ~ .gh-art .gh-mark { fill: #fcd34d; }
+                .gh-connection[data-gh-state="error"] .gh-badge,
+                .gh-connection #gh-state-error:target ~ .gh-art .gh-badge { fill: #fcd34d; stroke: #ffe6a1; }
+                .gh-connection[data-gh-state="error"] .gh-error,
+                .gh-connection #gh-state-error:target ~ .gh-art .gh-error { opacity: 1; }
+                .gh-connection[data-gh-state="error"] .gh-off,
+                .gh-connection #gh-state-error:target ~ .gh-art .gh-off { opacity: 0; }
+
+                @keyframes gh-breathe {
+                  0%, 100% { opacity: .24; transform: scale(.94); }
+                  50% { opacity: .48; transform: scale(1.07); }
+                }
+                @keyframes gh-orbit { to { transform: rotate(360deg); } }
+
+                /* Color and badge shapes remain legible without animation. */
+                @media (prefers-reduced-motion: reduce) {
+                  .gh-connection * { animation: none !important; transition: none !important; }
+                }
+                @media (forced-colors: active) {
+                  .gh-connection .gh-shell, .gh-connection .gh-badge {
+                    fill: Canvas !important; stroke: CanvasText !important;
+                  }
+                  .gh-connection .gh-mark { fill: CanvasText !important; }
+                  .gh-connection .gh-check, .gh-connection .gh-off, .gh-connection .gh-error,
+                  .gh-connection .gh-orbit { stroke: CanvasText !important; }
+                  .gh-connection .gh-halo { display: none; }
+                }
+                  ]]></style>
+                  <g id="gh-state-connected" />
+                  <g id="gh-state-connecting" />
+                  <g id="gh-state-error" />
+                  <g class="gh-art">
+                    <g class="gh-halo"><rect class="gh-breathe" x="8" y="8" width="48" height="48" rx="16" /></g>
+                    <rect class="gh-shell" x="7" y="7" width="50" height="50" rx="15" />
+                    <path d="M19 10h26" stroke="#fff" stroke-opacity=".07" stroke-linecap="round" />
+                    <circle class="gh-orbit" cx="32" cy="32" r="23" pathLength="100" />
+                    <g class="gh-mark" transform="translate(16 16) scale(2)">
+                      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
+                    </g>
+                    <circle class="gh-badge" cx="50" cy="50" r="7.5" />
+                    <path class="gh-check" d="m46.6 50 2.4 2.5 4.5-5.1" pathLength="1" />
+                    <path class="gh-off" d="M47 50h6" />
+                    <path class="gh-error" d="M50 46.5v3.4m0 2.4v.2" />
+                  </g>
+                </svg>
+                <span id="github-connect-label" class="gh-label">Connect GitHub</span>
+              </button>
+            </div>
+            <p id="github-device" class="gh-device" hidden>
+              <span class="gh-device-text">Approve in the browser. Code:</span>
+              <code id="github-device-code" class="gh-device-code"></code>
+              <button id="github-device-copy" type="button" class="link-button">Copy</button>
+              <button id="github-device-cancel" type="button" class="link-button">Cancel</button>
+            </p>
+            <p id="github-connect-error" class="gh-error" role="status" aria-live="polite" hidden></p>
+          </div>
+        </section>
+      </div>
+
+      <div id="panel-folders" class="tab-panel folders-panel" role="tabpanel" aria-labelledby="tab-folders" hidden>
+        <section class="section">
+          <h2 class="panel-title">Folders</h2>
+          <p class="panel-note">Choose folders ChatGPT can access. The first stays bound to GitHub.</p>
+          <button id="add-folder" class="folder-button" type="button">Add a folder</button>
+          <ul id="folder-list" class="folder-list"></ul>
+        </section>
+        <section class="section smart-section">
+          <h3 class="panel-subtitle">
+            <span class="module-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/v3-assets/icons/symbols.svg#st-folder-access"></use></svg></span>
+            <span>Smart folders</span>
+          </h3>
+          <p class="panel-note">Serve one recurring child folder, such as For-AI, instead of whole projects. Project-level folders only; nothing outside them is reachable.</p>
+          <fieldset class="smart-projects">
+            <legend>Projects to look in</legend>
+            <ul id="smart-project-list" class="smart-project-list"></ul>
+          </fieldset>
+          <div class="smart-row">
+            <label class="smart-label" for="smart-name">Folder name</label>
+            <select id="smart-name" class="smart-name"></select>
+            <button id="smart-refresh" class="link-button" type="button">Refresh</button>
+          </div>
+          <ul id="smart-preview" class="smart-preview" aria-label="Exact matching folders"></ul>
+          <div class="button-row smart-actions">
+            <button id="smart-apply" type="button">Apply smart scope</button>
+            <button id="smart-restore" type="button">Restore full-project access</button>
+          </div>
+          <p id="smart-state" class="smart-state" data-fit></p>
+        </section>
+      </div>
+
+      <div id="panel-security" class="tab-panel security-panel" role="tabpanel" aria-labelledby="tab-security" hidden>
+        <section class="section">
+          <h2 class="panel-title">Security Center</h2>
+          <p class="panel-note">Planned — controls are not implemented yet.</p>
+          <ul class="module-plan" aria-label="Planned security features">
+            <li>
+              <span class="module-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/v3-assets/icons/symbols.svg#st-access-key"></use></svg></span>
+              <span>Access keys — expiry and revocation.</span>
+            </li>
+            <li>
+              <span class="module-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/v3-assets/icons/symbols.svg#st-activity-log"></use></svg></span>
+              <span>Activity log — review access and changes.</span>
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      <div id="panel-network" class="tab-panel network-panel" role="tabpanel" aria-labelledby="tab-network" hidden>
+        <section class="section">
+          <h2 class="panel-title">Network</h2>
+          <fieldset id="network-mode" class="mode-choice">
+            <legend>Connection purpose</legend>
+            <div class="mode-options">
+              <label class="mode-option">
+                <input type="radio" name="network-purpose" value="temporary" aria-label="Temporary peer, 24 hours" checked />
+                <img src="/v3-assets/network-modes/temporary-peer.svg" alt="" />
+              </label>
+              <label class="mode-option">
+                <input type="radio" name="network-purpose" value="dependent" aria-label="Persistent peer, until revoked" />
+                <img src="/v3-assets/network-modes/persistent-peer.svg" alt="" />
+              </label>
+              <label class="mode-option">
+                <input type="radio" name="network-purpose" value="profile" aria-label="Copy portable settings" />
+                <img src="/v3-assets/network-modes/portable-settings.svg" alt="" />
+              </label>
+            </div>
+          </fieldset>
+          <p id="network-mode-note" class="panel-note"></p>
+          <div id="network-profile-options" hidden>
+            <label><input type="checkbox" id="network-include-github" /> Include my GitHub grant when sending</label>
+            <label><input type="checkbox" id="network-confirm-import" /> Accept settings and authorizations when receiving</label>
+            <p class="panel-note">A copied GitHub grant has shared revocation. Stop this PC’s main tunnel before importing.</p>
+          </div>
+          <label class="switch-row network-switch">
+            <span>Share as an encrypted file</span>
+            <input id="network-file-mode" type="checkbox" />
+            <span class="switch" aria-hidden="true"></span>
+          </label>
+          <label class="switch-row network-switch" id="network-short-row">
+            <span>Short code, valid 5 minutes</span>
+            <input id="network-short" type="checkbox" />
+            <span class="switch" aria-hidden="true"></span>
+          </label>
+          <input id="network-file-password" type="password" autocomplete="new-password" spellcheck="false" minlength="8" aria-label="Password for the encrypted invitation file" placeholder="File password, at least 8 characters" hidden />
+          <div class="network-area">
+            <h3 class="network-area-title">Give this to the other PC</h3>
+            <input id="network-outgoing" aria-label="One-use outgoing invitation" readonly autocomplete="off" spellcheck="false" placeholder="Nothing to send yet" />
+            <div class="network-row">
+              <button id="network-create" type="button">Create invitation</button>
+              <button id="network-copy-link" type="button">Copy</button>
+              <button id="network-save-file" type="button" hidden>Save file</button>
+            </div>
+          </div>
+          <div class="network-area">
+            <h3 class="network-area-title">Take this from the other PC</h3>
+            <input id="network-incoming" aria-label="Invitation to join or import" autocomplete="off" spellcheck="false" placeholder="Paste the invitation here" />
+            <div id="network-grants">
+              <label for="network-name">This PC’s name</label>
+              <input id="network-name" maxlength="80" value="Joined PC" />
+              <label for="network-roots">Folders shared with the gateway’s AI clients</label>
+              <select id="network-roots" multiple size="2" aria-label="Choose approved local folders to share"></select>
+              <label><input id="network-write" type="checkbox" /> Allow file writes within those folders</label>
+            </div>
+            <div class="network-row">
+              <button id="network-open-file" type="button" hidden>Open file</button>
+              <button id="network-join" type="button">Receive / join</button>
+            </div>
+          </div>
+          <p id="network-message" class="network-message" data-fit role="status" aria-live="polite">Select a purpose to create or receive an invitation.</p>
+          <div class="network-row">
+            <select id="network-devices" aria-label="Paired devices and pending invitations"></select>
+            <button id="network-revoke" type="button">Revoke</button>
+            <button id="network-leave" type="button">Leave gateway</button>
+          </div>
+          <p class="network-planned panel-note"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="/v3-assets/icons/symbols.svg#st-peer-pairing"></use></svg> One gateway, directly joined PCs. <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/v3-assets/icons/symbols.svg#st-storage-box"></use></svg> External storage remains planned.</p>
+        </section>
+      </div>
+
+      <div id="panel-system-prompt" class="tab-panel prompt-panel" role="tabpanel" aria-labelledby="tab-system-prompt" hidden>
+        <section class="section">
+          <h2 class="panel-title">System Prompt</h2>
+          <p class="panel-note">Standing instructions for ChatGPT on this connection. They are sent as this connector&rsquo;s MCP instructions when ChatGPT connects. Saving restarts the local server, so an open chat sees them on its next connection.</p>
+
+          <label for="system-prompt-builtin"><span class="module-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/v3-assets/icons/symbols.svg#st-builtin-prompt"></use></svg></span><span>Built-in Secret Tunnel prompt</span></label>
+          <textarea id="system-prompt-builtin" class="prompt-text" rows="4" readonly spellcheck="false" aria-describedby="system-prompt-builtin-note"></textarea>
+          <p id="system-prompt-builtin-note" class="panel-note">Generated by the app. Read-only.</p>
+
+          <label for="system-prompt-custom"><span class="module-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/v3-assets/icons/symbols.svg#st-custom-prompt"></use></svg></span><span>Custom prompt</span></label>
+          <textarea id="system-prompt-custom" class="prompt-text" rows="3" spellcheck="false" aria-describedby="system-prompt-custom-note" placeholder="Example: Prefer minimal edits. Ask before deleting files. Focus on project folders only."></textarea>
+          <p id="system-prompt-custom-note" class="panel-note">Added to the built-in prompt.</p>
+
+          <label for="system-prompt-links"><span class="module-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="/v3-assets/icons/symbols.svg#st-skill-links"></use></svg></span><span>Skill links</span></label>
+          <textarea id="system-prompt-links" class="prompt-text" rows="2" spellcheck="false" aria-describedby="system-prompt-links-note" placeholder="https://github.com/owner/skill-one&#10;https://github.com/owner/skill-two"></textarea>
+          <p id="system-prompt-links-note" class="panel-note">One URL per line. Stored as references for ChatGPT.</p>
+
+          <label for="system-prompt-effective"><span>Effective prompt</span></label>
+          <textarea id="system-prompt-effective" class="prompt-text" rows="3" readonly spellcheck="false" aria-describedby="system-prompt-effective-note"></textarea>
+          <p id="system-prompt-effective-note" class="panel-note">Exactly what this connector sends. Preview updates as you type; the saved copy is what is sent.</p>
+
+          <div class="prompt-row">
+            <button id="system-prompt-save" type="button">Save</button>
+            <p id="system-prompt-message" class="panel-note" data-fit role="status" aria-live="polite"></p>
+          </div>
+        </section>
+      </div>
+
+      <div id="panel-storage" class="tab-panel storage-panel" role="tabpanel" aria-labelledby="tab-storage" hidden>
+        <section class="section">
+          <h2 class="panel-title">Storage Box</h2>
+          <p class="panel-note">Live SFTP access. Nothing is scanned or synced in advance.</p>
+          <div class="diag-row"><span>Account</span><strong id="storage-account" data-fit>Not configured</strong></div>
+          <div class="diag-row"><span>ChatGPT access</span><strong id="storage-access" data-fit>Disabled</strong></div>
+          <div class="button-row">
+            <button id="storage-configure" type="button">Configure</button>
+            <button id="storage-test" type="button">Test</button>
+            <button id="storage-enable" type="button">Enable</button>
+            <button id="storage-disable" type="button">Disconnect</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <label for="storage-path">Directory, relative to the account root</label>
+          <div class="copy-row">
+            <input id="storage-path" spellcheck="false" placeholder="Account root" />
+            <button id="storage-browse" type="button">Browse</button>
+          </div>
+          <select id="storage-files" size="7" aria-label="Storage Box entries"></select>
+          <div class="button-row">
+            <button id="storage-up" type="button">Up</button>
+            <button id="storage-open" type="button">Open</button>
+            <button id="storage-more" type="button" disabled>More</button>
+            <button id="storage-new" type="button">New text</button>
+            <button id="storage-transfer" type="button">Copy file</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <label for="storage-job-id">Operation receipt</label>
+          <div class="copy-row">
+            <input id="storage-job-id" spellcheck="false" placeholder="No operation yet" />
+            <button id="storage-job-refresh" type="button">Check</button>
+          </div>
+          <p id="storage-message" class="storage-message" role="status" aria-live="polite" data-fit>
+            Configure and test the connection, then enable access.
+          </p>
+        </section>
+      </div>
+
+      <div id="panel-slot-7" class="tab-panel tab-panel-empty" role="tabpanel" aria-labelledby="tab-slot-7" hidden>
+        <p class="empty-note">Empty tab 7. Reserved space for a feature that is not built yet.</p>
+      </div>
+
+      <div id="panel-slot-8" class="tab-panel tab-panel-empty" role="tabpanel" aria-labelledby="tab-slot-8" hidden>
+        <p class="empty-note">Empty tab 8. Reserved space for a feature that is not built yet.</p>
+      </div>
+
+      <div id="panel-slot-9" class="tab-panel tab-panel-empty" role="tabpanel" aria-labelledby="tab-slot-9" hidden>
+        <p class="empty-note">Empty tab 9. Reserved space for a feature that is not built yet.</p>
+      </div>
+
+      <div id="panel-slot-10" class="tab-panel tab-panel-empty" role="tabpanel" aria-labelledby="tab-slot-10" hidden>
+        <p class="empty-note">Empty tab 10. Reserved space for a feature that is not built yet.</p>
+      </div>
+
+      <div id="panel-slot-11" class="tab-panel tab-panel-empty" role="tabpanel" aria-labelledby="tab-slot-11" hidden>
+        <p class="empty-note">Empty tab 11. Reserved space for a feature that is not built yet.</p>
+      </div>
+
+      </main>
+
+      <nav class="tab-rail" role="tablist" aria-orientation="vertical" aria-label="Sections">
+        <button
+          id="tab-overview"
+          class="cabinet-tab"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="panel-overview"
+          title="Overview"
+          aria-label="Overview"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 20V12a8 8 0 0 1 16 0v8" />
+            <path d="M9.5 20v-7.6a2.5 2.5 0 0 1 5 0V20" />
+          </svg>
+        </button>
+        <button
+          id="tab-folders"
+          class="cabinet-tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-folders"
+          title="Folders"
+          aria-label="Folders" tabindex="-1"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <use href="/v3-assets/icons/symbols.svg#st-folder-presets"></use>
+          </svg>
+        </button>
+        <button
+          id="tab-security"
+          class="cabinet-tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-security"
+          title="Security Center"
+          aria-label="Security Center" tabindex="-1"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <use href="/v3-assets/icons/symbols.svg#st-security-center"></use>
+          </svg>
+        </button>
+        <button
+          id="tab-network"
+          class="cabinet-tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-network"
+          title="Network"
+          aria-label="Network" tabindex="-1"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <use href="/v3-assets/icons/symbols.svg#st-network-devices"></use>
+          </svg>
+        </button>
+        <button
+          id="tab-system-prompt"
+          class="cabinet-tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-system-prompt"
+          title="System Prompt"
+          aria-label="System Prompt" tabindex="-1"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <use href="/v3-assets/icons/symbols.svg#st-system-prompt"></use>
+          </svg>
+        </button>
+        <button
+          id="tab-storage"
+          class="cabinet-tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-storage"
+          title="Storage Box"
+          aria-label="Storage Box" tabindex="-1"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <use href="/v3-assets/icons/symbols.svg#st-storage-box"></use>
+          </svg>
+        </button>
+        <button
+          id="tab-slot-7"
+          class="cabinet-tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-slot-7"
+          title="Empty tab 7"
+          aria-label="Empty tab 7" tabindex="-1"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3.6" y="3.6" width="16.8" height="16.8" rx="4" stroke-dasharray="3 2.6" />
+            <text x="12" y="15.4" text-anchor="middle">7</text>
+          </svg>
+        </button>
+        <button
+          id="tab-slot-8"
+          class="cabinet-tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-slot-8"
+          title="Empty tab 8"
+          aria-label="Empty tab 8" tabindex="-1"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3.6" y="3.6" width="16.8" height="16.8" rx="4" stroke-dasharray="3 2.6" />
+            <text x="12" y="15.4" text-anchor="middle">8</text>
+          </svg>
+        </button>
+        <button
+          id="tab-slot-9"
+          class="cabinet-tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-slot-9"
+          title="Empty tab 9"
+          aria-label="Empty tab 9" tabindex="-1"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3.6" y="3.6" width="16.8" height="16.8" rx="4" stroke-dasharray="3 2.6" />
+            <text x="12" y="15.4" text-anchor="middle">9</text>
+          </svg>
+        </button>
+        <button
+          id="tab-slot-10"
+          class="cabinet-tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-slot-10"
+          title="Empty tab 10"
+          aria-label="Empty tab 10" tabindex="-1"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3.6" y="3.6" width="16.8" height="16.8" rx="4" stroke-dasharray="3 2.6" />
+            <text x="12" y="15.4" text-anchor="middle">10</text>
+          </svg>
+        </button>
+        <button
+          id="tab-slot-11"
+          class="cabinet-tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-slot-11"
+          title="Empty tab 11"
+          aria-label="Empty tab 11" tabindex="-1"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3.6" y="3.6" width="16.8" height="16.8" rx="4" stroke-dasharray="3 2.6" />
+            <text x="12" y="15.4" text-anchor="middle">11</text>
+          </svg>
+        </button>
+      </nav>
+    </div>
+
+
+    <dialog id="github" class="sheet">
+      <div class="sheet-head">
+        <h2>GitHub</h2>
+        <button id="close-github" type="button" class="icon-button" aria-label="Close">✕</button>
+      </div>
+
+      <div class="sheet-body">
+        <p>
+          ChatGPT can <em>propose</em> a commit. It cannot make one. Every change waits here until you
+          read it and approve it in this window, and approval covers the exact files and the exact
+          contents shown — if anything changes afterwards, the commit is refused rather than made
+          from something you did not see.
+        </p>
+
+        <label class="github-toggle">
+          <input id="github-enabled" type="checkbox" />
+          <span>Let ChatGPT propose commits for the selected folder</span>
+        </label>
+
+        <p id="github-blocked" class="github-blocked" hidden></p>
+
+        <h3>Repository</h3>
+        <p id="github-repo-state" class="github-meta">Checking…</p>
+        <div class="github-bind-row">
+          <input id="github-owner" spellcheck="false" placeholder="owner" autocomplete="off" />
+          <span class="github-slash">/</span>
+          <input id="github-repo" spellcheck="false" placeholder="repository" autocomplete="off" />
+        </div>
+        <div class="github-actions">
+          <button id="github-bind" type="button">Link</button>
+          <button id="github-unbind" type="button">Unlink</button>
+          <button id="github-init" type="button">Make this folder a repository</button>
+        </div>
+
+        <h3>Waiting for your decision</h3>
+        <div id="github-plans" class="github-plans"></div>
+      </div>
+
+      <div class="sheet-foot">
+        <p id="github-message" class="github-message" role="status" aria-live="polite"></p>
+        <button id="done-github" type="button" class="primary">Close</button>
+      </div>
+    </dialog>
+
+    <dialog id="about" class="sheet">
+      <div class="sheet-head">
+        <h2>About Secret Tunnel</h2>
+        <button id="close-about" type="button" class="icon-button" aria-label="Close">✕</button>
+      </div>
+
+      <div class="sheet-body">
+        <h3>What this app does</h3>
+        <p>
+          It lets ChatGPT read — and optionally edit — the files in <em>one folder you choose</em> on this
+          computer. It does that by running a small file server on your machine and giving it a public web
+          address that ChatGPT can call.
+        </p>
+        <p>Nothing is uploaded in advance. Files are read from your disk at the moment ChatGPT asks for them.</p>
+
+        <h3>What an MCP server is</h3>
+        <p>
+          MCP, the Model Context Protocol, is a standard way for an AI assistant to call <em>tools</em> that
+          someone else has written. The assistant does not get a folder; it gets a list of operations such as
+          "list files", "read this file", "search for this text", and it calls them like functions and reads
+          the replies.
+        </p>
+        <p>
+          The MCP server here is <code>gpt-repo-mcp</code>, a Node program bundled inside this app. It offers
+          those tools and refuses anything outside the folder you picked. In <strong>Read</strong> mode the
+          tools that modify files are not offered at all.
+        </p>
+
+        <h3>Why a tunnel is needed</h3>
+        <p>
+          The file server listens on <code>127.0.0.1</code>, the loopback address. That is not a personal
+          address — it is the same number on every computer in the world, and on each one it means "this
+          machine, talking to itself". Nothing outside your computer can reach it, by design. The port after
+          it (<code>8790</code> unless you change it) just picks which program on this machine answers.
+        </p>
+        <p>
+          ChatGPT does not run on your computer; it runs in OpenAI's datacentre. It cannot dial your laptop —
+          your router and firewall exist precisely to stop that.
+        </p>
+        <p>
+          A tunnel solves that. This app uses <strong>zrok</strong>: it opens an outbound connection from your
+          machine to zrok's servers and asks for a public HTTPS address. Requests arriving at that address are
+          carried back down the connection you opened and handed to your local file server. You never have to
+          open a port or change your router, because the connection was made from the inside out.
+        </p>
+
+        <h3>What actually happens when ChatGPT reads a file</h3>
+        <ol>
+          <li>ChatGPT sends an MCP tool call to your public address.</li>
+          <li>zrok forwards it down the tunnel to the loopback port on this machine.</li>
+          <li>The local server checks the request is inside your chosen folder, reads the file from disk, and replies.</li>
+          <li>The reply travels back the same way. The app stays a courier; the files stay on your disk.</li>
+        </ol>
+
+        <h3>What this means for your privacy</h3>
+        <ul>
+          <li>Only the folder you selected is reachable. Nothing above or outside it is offered.</li>
+          <li>The address contains a long secret token. <strong>Anyone who has the full address can read that folder</strong>, so treat it like a password.</li>
+          <li>In <strong>Read+write</strong> mode they could also change files in it. Use <strong>Read</strong> unless you need edits.</li>
+          <li>Close this window and the tunnel closes with it. The address stops working until you reopen the app.</li>
+          <li>The refresh button next to the address issues a brand-new one, which immediately invalidates the old.</li>
+        </ul>
+
+        <h3>Why the address stays the same</h3>
+        <p>
+          The name in your address is reserved on your zrok account, so it survives restarts and folder
+          changes. That is why you only add the plugin to ChatGPT once, and can keep pointing the app at
+          different projects afterwards.
+        </p>
+
+        <h3>Credits</h3>
+        <p>
+          The idea, and the server that does the actual work, come from
+          <button class="link-button" data-open-url="https://github.com/CAHN91/gpt-repo-mcp">gpt-repo-mcp</button>
+          by Promptiva AB, used under the MIT licence. That project is the MCP server which exposes the
+          folder and enforces what may be read or written. Secret Tunnel is the launcher and tunnel around
+          it.
+        </p>
+        <p>
+          The tunnel is provided by <button class="link-button" data-open-url="https://zrok.io/">zrok</button>,
+          built on OpenZiti by NetFoundry.
+        </p>
+      </div>
+
+      <div class="sheet-foot">
+        <button id="done-about" type="button" class="primary">Close</button>
+      </div>
+    </dialog>
+
+    <dialog id="instructions" class="sheet">
+      <div class="sheet-head">
+        <h2>Setup instructions</h2>
+        <button id="close-instructions" type="button" class="icon-button" aria-label="Close">✕</button>
+      </div>
+
+      <div class="sheet-body">
+        <h3>1. Enable zrok (one time)</h3>
+        <ol>
+          <li>Open <button class="link-button" data-open-url="https://myzrok.io">myzrok.io</button> and create a free account.</li>
+          <li>In the zrok console, copy your <strong>enable token</strong>.</li>
+          <li>Paste it into the <strong>zrok token</strong> box in this window and press <strong>Enable</strong>.</li>
+        </ol>
+        <p class="sheet-note">The token is used once to register this machine. It is not your MCP address.</p>
+
+        <h3>2. Choose the folder to share</h3>
+        <ol>
+          <li>Press <strong>Select access folder</strong> and pick a project folder.</li>
+          <li>Never pick a drive root, your home folder, or a system folder.</li>
+          <li>Pick <strong>Read</strong>, or <strong>Read+write</strong> if ChatGPT should be able to change files.</li>
+        </ol>
+
+        <h3>3. Wait for green</h3>
+        <p>
+          <strong>ChatGPT can reach it</strong> must say <span class="state-ok">Connected</span>. That means a real
+          MCP handshake succeeded through the public address. If it is red, the reason is shown underneath it.
+        </p>
+
+        <h3>4. Add it to ChatGPT</h3>
+        <ol>
+          <li>Press <strong>Copy</strong> next to the MCP Address above.</li>
+          <li>In ChatGPT, open <strong>Plugins</strong> in the left sidebar, then <strong>New Plugin</strong>.</li>
+          <li><strong>Name</strong>: anything, for example <em>Secret Tunnel</em>.</li>
+          <li><strong>Connection</strong>: leave it on <strong>Server URL</strong> and paste the copied address.</li>
+          <li><strong>Authentication</strong>: choose <strong>No Auth</strong>. The address already contains a secret token.</li>
+          <li>Tick <strong>I understand and want to continue</strong>, then press <strong>Create</strong>.</li>
+        </ol>
+
+        <h3>Day to day</h3>
+        <ul>
+          <li>Keep this window open while ChatGPT is using the folder.</li>
+          <li>You can switch folders at any time — <strong>the MCP address stays the same</strong>, so you do not need to add the plugin again.</li>
+          <li>Treat the address like a password: anyone who has it can read the shared folder.</li>
+        </ul>
+      </div>
+
+      <div class="sheet-foot">
+        <button id="copy-url-from-instructions" type="button">Copy MCP address</button>
+        <button id="done-instructions" type="button" class="primary">Done</button>
+      </div>
+    </dialog>
+
+    <dialog id="storage-settings" class="sheet storage-sheet">
+      <div class="sheet-head">
+        <h2>Storage Box connection</h2>
+        <button type="button" class="icon-button" data-storage-close aria-label="Close">✕</button>
+      </div>
+      <form id="storage-settings-form">
+        <div class="sheet-body">
+          <p>This grants access to the account root. Use a Hetzner subaccount for a server-confined folder.</p>
+          <div class="storage-grid">
+            <div>
+              <label for="storage-host">Hostname</label>
+              <input id="storage-host" placeholder="u123456.your-storagebox.de" required spellcheck="false" />
+            </div>
+            <div>
+              <label for="storage-user">Username</label>
+              <input id="storage-user" placeholder="u123456-sub1" required spellcheck="false" />
+            </div>
+          </div>
+          <label for="storage-port">SSH port</label>
+          <select id="storage-port">
+            <option value="23">23 · extended SSH enabled</option>
+            <option value="22">22 · SFTP</option>
+          </select>
+          <label for="storage-rclone">Native rclone executable</label>
+          <div class="copy-row">
+            <input id="storage-rclone" required spellcheck="false" />
+            <button type="button" data-storage-pick="storage-rclone">Browse</button>
+          </div>
+          <label for="storage-known-hosts">Verified SSH known_hosts file</label>
+          <div class="copy-row">
+            <input id="storage-known-hosts" required spellcheck="false" />
+            <button type="button" data-storage-pick="storage-known-hosts">Browse</button>
+          </div>
+          <p>Verify the fingerprint against Hetzner's published value. Keep these files outside exposed local folders.</p>
+          <label for="storage-auth">Authentication</label>
+          <select id="storage-auth">
+            <option value="password">Password</option>
+            <option value="key">Private key file</option>
+          </select>
+          <div id="storage-password-row">
+            <label for="storage-password">Password</label>
+            <input
+              id="storage-password"
+              type="password"
+              autocomplete="new-password"
+              placeholder="Blank retains the saved password for this account"
+            />
+          </div>
+          <div id="storage-key-row" hidden>
+            <label for="storage-key">Private key (unencrypted file)</label>
+            <div class="copy-row">
+              <input id="storage-key" spellcheck="false" />
+              <button type="button" data-storage-pick="storage-key">Browse</button>
+            </div>
+          </div>
+          <label class="storage-check"><input id="storage-write" type="checkbox" />Allow Storage Box writes</label>
+          <label class="storage-check"><input id="storage-transfers" type="checkbox" />Allow copies with approved local folders</label>
+          <p>Writes also require global Read+write mode. Read tests never modify files.</p>
+          <p id="storage-credential-kind" data-fit></p>
+          <p id="storage-settings-message" role="status" aria-live="polite" data-fit></p>
+        </div>
+        <div class="sheet-foot">
+          <button type="button" data-storage-close>Cancel</button>
+          <button id="storage-save" type="submit" class="primary">Save connection</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="storage-reader" class="sheet storage-sheet">
+      <div class="sheet-head">
+        <h2>Text file</h2>
+        <button type="button" class="icon-button" data-storage-close aria-label="Close">✕</button>
+      </div>
+      <div class="sheet-body">
+        <label for="storage-file-path">Remote path</label>
+        <input id="storage-file-path" spellcheck="false" />
+        <label for="storage-text">UTF-8 text</label>
+        <textarea id="storage-text" rows="10" spellcheck="false"></textarea>
+        <p id="storage-read-info" data-fit></p>
+        <p id="storage-reader-message" role="status" aria-live="polite" data-fit></p>
+      </div>
+      <div class="sheet-foot">
+        <button type="button" data-storage-close>Close</button>
+        <button id="storage-write-file" type="button" class="primary">Save changes</button>
+      </div>
+    </dialog>
+
+    <dialog id="storage-copy" class="sheet storage-sheet">
+      <div class="sheet-head">
+        <h2>Copy one file</h2>
+        <button type="button" class="icon-button" data-storage-close aria-label="Close">✕</button>
+      </div>
+      <form id="storage-copy-form">
+        <div class="sheet-body">
+          <label for="storage-direction">Direction</label>
+          <select id="storage-direction">
+            <option value="upload">Local folder → Storage Box</option>
+            <option value="download">Storage Box → local folder</option>
+          </select>
+          <label for="storage-local-root">Approved local folder</label>
+          <select id="storage-local-root" required></select>
+          <label for="storage-local-path">Local relative path</label>
+          <input id="storage-local-path" required spellcheck="false" />
+          <label for="storage-remote-path">Remote relative path</label>
+          <input id="storage-remote-path" required spellcheck="false" />
+          <p>
+            One regular file, including binary files. Choose a new destination with existing parent
+            directories. The source is retained. Verification reads the copied data back.
+          </p>
+          <p id="storage-copy-message" role="status" aria-live="polite" data-fit></p>
+        </div>
+        <div class="sheet-foot">
+          <button type="button" data-storage-close>Cancel</button>
+          <button type="submit" class="primary">Queue copy</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>

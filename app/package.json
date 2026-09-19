@@ -1,0 +1,47 @@
+{
+  "name": "secret-tunnel",
+  "private": true,
+  "version": "0.4.0",
+  "type": "module",
+  "scripts": {
+    "test:network": "node --test scripts/network.test.mjs",
+    "test:actions": "node --test scripts/action-vehicle.test.mjs scripts/action-framework.test.mjs",
+    "verify:actions": "node scripts/verify-actions.mjs",
+    "verify:github": "node scripts/verify-github-bridge.mjs --sdk",
+    "test:github-contract": "node --test scripts/github-bridge-tests/hardening.test.mjs",
+    "verify:github-contract": "node scripts/verify-github-contract.mjs",
+    "smoke:github": "node scripts/smoke-github-endpoint.mjs",
+    "actions:fixtures": "node scripts/action-ticket.mjs fixtures",
+    "actions:desktop-test": "node scripts/launch-actions-fixture.mjs",
+    "prepare:runtime": "node scripts/prepare-runtime.mjs",
+    "prepare:zrok": "node scripts/prepare-zrok.mjs",
+    "prepare:node": "node scripts/prepare-node.mjs",
+    "prepare:mcp": "node scripts/prepare-gpt-repo-mcp.mjs",
+    "clean:release-bundle": "node scripts/clean-release-bundle.mjs",
+    "smoke:binaries": "node scripts/smoke-runtime-binaries.mjs",
+    "smoke:layout": "node scripts/smoke-runtime-layout.mjs",
+    "smoke:ui": "node scripts/smoke-ui-contract.mjs",
+    "smoke:mcp": "node scripts/smoke-bundled-mcp.mjs",
+    "smoke:smart-scope": "node scripts/smoke-smart-scope-mcp.mjs",
+    "smoke:live": "node scripts/smoke-live-e2e.mjs",
+    "smoke:release-binaries": "node scripts/smoke-runtime-binaries.mjs src-tauri/target/release",
+    "smoke:release-runtime": "node scripts/smoke-bundled-mcp.mjs src-tauri/target/release",
+    "smoke:release-launch:windows": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/smoke-release-launch.ps1",
+    "release:checksums": "node scripts/write-artifact-manifest.mjs",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@chenglou/pretext": "^0.0.9",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-clipboard-manager": "^2.3.3"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "typescript": "~6.0.3",
+    "vite": "^8.0.16"
+  },
+  "license": "MIT"
+}

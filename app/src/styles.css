@@ -1,0 +1,1754 @@
+:root {
+  color: #f8fafc;
+  background: transparent;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 636px;
+  min-height: 704px;
+  background: transparent;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  height: 34px;
+  border: 1px solid #3b3f6b;
+  border-radius: 7px;
+  padding: 0 12px;
+  color: #f8fafc;
+  background: #15172c;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #232746;
+}
+
+button:disabled,
+input:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+button.danger {
+  border-color: #9f1239;
+  color: #9f1239;
+}
+
+input {
+  width: 100%;
+  height: 34px;
+  min-width: 0;
+  border: 1px solid #3b3f6b;
+  border-radius: 7px;
+  padding: 0 10px;
+  color: #f8fafc;
+  background: #15172c;
+}
+
+input:focus,
+button:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 1px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  color: #d1d5db;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+p {
+  margin: 4px 0 0;
+  color: #cbd5e1;
+}
+
+/* The window is one row: the content column, and the cabinet rail down its
+   right edge. The column keeps the 580px it was designed at - the window grew
+   by the width of the rail rather than the content shrinking to make room. */
+.workbench {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+.shell {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  max-width: 580px;
+  padding: 12px 16px;
+  overflow: hidden;
+  /* Each page in the deck is its own paper. The hue walks a full wheel across
+     the pile - one `--hue-step` per sheet from the app's indigo - so the deck
+     runs blue, violet, red, amber, green and back, every one of them held at
+     the same very low lightness. Dark hues, not dark shades: the step is in
+     hue alone, because a lightness ramp on top of it would leave the last
+     sheets too pale to read white text on. At 9.5% every hue on the wheel
+     still clears 15:1 against the foreground. `--page-index` is the open
+     sheet, set by the tab strip. */
+  background: hsl(
+    calc(236 + var(--page-index, 0) * var(--hue-step, 33)) 36% 9.5%
+  );
+  transition: background-color 320ms ease;
+  /* One stroke, the same weight and colour the whole way round the silhouette,
+     including the right edge where it shows between the tabs. The open tab
+     covers its own 1px of that edge, which is what joins the two. */
+  border: 1px solid #3b3f6b;
+  border-radius: 12px 0 0 12px;
+}
+
+/* Only one panel is in the layout at a time; `hidden` takes the others out of
+   it entirely, so a hidden panel costs no height and no tab order. */
+.tab-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.tab-panel[hidden] {
+  display: none;
+}
+
+.tab-panel-empty {
+  align-items: center;
+  justify-content: center;
+}
+
+/* The folders tab. A plain list: the native picker does the browsing, so this
+   only has to show what is currently shared and let a row be dropped. */
+.folders-panel {
+  overflow-y: auto;
+}
+
+.panel-title {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.panel-note {
+  margin: 0 0 12px;
+  color: #6b7095;
+  font-size: 12px;
+}
+
+/* Named module placeholders: plain intent rows, not inactive controls. */
+.module-plan {
+  list-style: none;
+  margin: 12px 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.module-plan li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #cbd5e1;
+}
+
+.module-icon {
+  flex: 0 0 1.6em;
+  height: 1.6em;
+  display: grid;
+  place-items: center;
+  container-type: size;
+  color: #a5b4fc;
+}
+
+.module-icon svg {
+  width: min(80cqh, 80cqw);
+  height: min(80cqh, 80cqw);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.network-hero {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 16px 0 0;
+}
+
+.network-hero img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.folder-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.folder-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid #23264a;
+  border-radius: 8px;
+  background: #15172c;
+}
+
+.folder-text {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+/* A folder name is runtime text, so it gets the same treatment as the path
+   below it. Without this it wraps, and a long name grows the row - the box
+   growing to fit the text, which is the one thing the standing rule forbids. */
+.folder-name {
+  display: block;
+  overflow: hidden;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The full path is the useful detail but never the thing that sets the width. */
+.folder-path {
+  display: block;
+  overflow: hidden;
+  color: #6b7095;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.folder-tag {
+  flex: 0 0 auto;
+  color: #818cf8;
+  font-size: 11px;
+}
+
+.folder-empty {
+  color: #6b7095;
+  font-size: 12px;
+}
+
+/* Smart folders: the second section of the Folders tab, in the same rows and
+   the same palette as the list above it. The panel already scrolls, so this
+   only has to bound its own two lists - a project list and a match preview
+   that can each be as long as the person's disk allows. */
+.smart-section {
+  margin-top: 16px;
+  border-top: 1px solid #23264a;
+  padding-top: 12px;
+}
+
+.panel-subtitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Icon and label are separate slots: the glyph keeps its own square box and its
+   container-relative sizing, and the label takes whatever is left. */
+.panel-subtitle > span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.smart-projects {
+  margin: 0 0 10px;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.smart-projects legend {
+  padding: 0;
+  color: #6b7095;
+  font-size: 11px;
+}
+
+.smart-project-list,
+.smart-preview {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  /* Bounded rather than tall: many projects scroll inside the section instead
+     of pushing the actions out of a window that cannot grow. */
+  max-height: 104px;
+  overflow-y: auto;
+  /* Only ever vertically. A long note or path must be fitted inside its row,
+     never turn the list into something that scrolls sideways. */
+  overflow-x: hidden;
+}
+
+.smart-project-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 12px;
+}
+
+.smart-project-list label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+/* The global rule stretches every input to the full row; a checkbox is not a
+   text field, so its own box is restored here. */
+.smart-project-list input[type="checkbox"] {
+  flex: 0 0 auto;
+  width: 16px;
+  min-width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  accent-color: #4f46e5;
+}
+
+.smart-project-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Why a project was not fully read. Shrinks before the project name does, and
+   keeps the whole sentence reachable on hover and to assistive technology. */
+.smart-project-note {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: #fbbf24;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.smart-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin-bottom: 8px;
+}
+
+.smart-label {
+  flex: 0 0 auto;
+  color: #6b7095;
+  font-size: 12px;
+}
+
+/* Native select, dressed like the text fields beside it rather than restyled
+   into something custom: the platform keeps its own keyboard and picker. */
+.smart-name {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  height: 34px;
+  border: 1px solid #3b3f6b;
+  border-radius: 7px;
+  padding: 0 8px;
+  font: inherit;
+  color: #f8fafc;
+  background: #15172c;
+}
+
+.smart-name:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 1px;
+}
+
+.smart-preview li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  padding: 5px 8px;
+  border: 1px solid #23264a;
+  border-radius: 6px;
+  background: #15172c;
+  font-size: 12px;
+}
+
+.smart-preview .smart-project-name {
+  flex: 0 1 auto;
+  max-width: 38%;
+}
+
+/* The folder name exactly as it is spelled on disk. Case is what the grouping
+   is about, so this slot is not allowed to be the one that gets cut. */
+.smart-preview-spelling {
+  flex: 0 0 auto;
+  color: #f8fafc;
+}
+
+/* The exact path is the useful detail and never what sets the width. */
+.smart-preview-path {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: #6b7095;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.smart-preview-missing {
+  color: #6b7095;
+}
+
+.smart-preview-exposed {
+  flex: 0 0 auto;
+  color: #818cf8;
+  font-size: 11px;
+}
+
+.smart-actions {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+}
+
+.smart-state {
+  margin: 8px 0 0;
+  min-width: 0;
+  overflow: hidden;
+  color: #cbd5e1;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.smart-state.state-bad {
+  color: #fca5a5;
+}
+
+.smart-state.state-ok {
+  color: #86efac;
+}
+
+.empty-note {
+  margin: 0;
+  max-width: 34ch;
+  color: #6b7095;
+  font-size: 13px;
+  text-align: center;
+}
+
+/* The cabinet rail paints nothing itself: only the sheets in it are visible, so
+   the desktop shows between them and the window stops reading as a rectangle.
+   It is left out of hit-testing too, or an invisible 56px strip would swallow
+   clicks meant for whatever is behind the window. */
+.tab-rail {
+  flex: 0 0 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  /* No padding at either end: the first sheet's top edge lines up with the
+     body's and the last one's with its bottom, so the stroke runs straight
+     across both instead of stepping into a notch. */
+  padding: 0;
+  background: transparent;
+  border-left: 0;
+  pointer-events: none;
+}
+
+/* Sheets in a pile, seen from the side. Each one runs under the body rather
+   than floating beside it - no left edge of its own, square where it meets the
+   body, rounded only where it comes out - so what shows in the gutter is the
+   protruding edge of a page, and the drop shadow lifts it off the sheet below.
+   A closed sheet is painted in its own page's hue, lifted in lightness so it
+   reads against the body: the same formula one step of `--tab-index` along, so
+   a sixth tab needs no new colour, only its index. */
+.cabinet-tab {
+  position: relative;
+  /* The sheets divide the rail's height between them, so the pile fills the
+     side whatever the count is - adding a slot re-spaces the deck rather than
+     spilling off the bottom. */
+  flex: 1 1 0;
+  min-height: 0;
+  width: 50px;
+  margin-left: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid #3b3f6b;
+  border-left: 0;
+  border-radius: 0 9px 9px 0;
+  background: hsl(
+    calc(236 + var(--tab-index, 0) * var(--hue-step, 33)) 34% 13.5%
+  );
+  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.45);
+  pointer-events: auto;
+  color: #6b7095;
+  cursor: pointer;
+  transition: width 120ms ease, color 120ms ease, background-color 320ms ease;
+  /* Each sheet is its own container so its mark can be sized against its own
+     height, which is the only thing about a sheet that changes with the tab
+     count. ponytail: below roughly 14px a sheet the mark stops being legible
+     whatever it is scaled to; if a deck ever needs that many tabs, scroll the
+     rail rather than shrinking further. */
+  container-type: size;
+}
+
+/* Hover lifts the mark and the edge, never the paper: repainting the face
+   would flatten the five shades into one. */
+.cabinet-tab:hover {
+  border-color: #6366f1;
+  color: #a5b4fc;
+}
+
+/* The open page. One pixel wider and pulled one pixel left, so its face covers
+   that much of the body's right edge: the outline runs on around the outside of
+   the tab instead of closing between the two. Its face is the body's own
+   colour, because the open page and the body are one surface. */
+.cabinet-tab[aria-selected="true"] {
+  width: 57px;
+  margin-left: -1px;
+  /* The open sheet is the body: its own index, and the body's exact paper. */
+  background: hsl(
+    calc(236 + var(--tab-index, 0) * var(--hue-step, 33)) 36% 9.5%
+  );
+  color: #a5b4fc;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.cabinet-tab:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: -3px;
+}
+
+/* The mark is a share of its sheet in both directions, and takes whichever of
+   the two is the tighter fit. No pixel constant anywhere in it: the sheet's box
+   is the input and the mark is what adapts, which is this repository's standing
+   rule and the reason there is no `24px` here to drift out of date. Which
+   dimension binds switches by itself - a tall sheet in a narrow rail is limited
+   by its width, a short one by its height - so overflow is arithmetic rather
+   than a threshold to stay ahead of. `container-type: size` on the sheet also
+   applies paint containment, so nothing could spill even if this were wrong.
+   Everything drawn inside the mark is in the SVG's own user units, so the
+   strokes and the slot numeral follow this size for free. */
+.cabinet-tab svg {
+  width: min(34cqh, 45cqw);
+  height: min(34cqh, 45cqw);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cabinet-tab svg text {
+  stroke: none;
+  fill: currentColor;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.row,
+.copy-row,
+.button-row,
+.diag-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero {
+  position: relative;
+  display: block;
+  min-height: 150px;
+  padding-bottom: 10px;
+}
+
+.hero-art {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  width: 168px;
+  height: 145px;
+  object-fit: contain;
+  object-position: left top;
+  transform: translate(-5px, -4px);
+  transform-origin: 35% 35%;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.28));
+  transition: opacity 150ms ease;
+}
+
+.hero-art-flow {
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.running.flow-ready .hero-art-static {
+  opacity: 0;
+}
+
+body.running.flow-ready .hero-art-flow {
+  opacity: 1;
+  animation: cloud-breathe 2400ms ease-in-out infinite;
+}
+
+.hero-main {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  padding-top: 12px;
+}
+
+.hero-heading {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) 72px;
+  align-items: start;
+  gap: 8px;
+}
+
+/* Anchored to the body rather than to a panel: there is no native title bar to
+   fall back on, so minimize and close have to stay reachable on every tab. */
+.window-controls {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  z-index: 3;
+}
+
+.window-control {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #6b7095;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.window-control:hover {
+  background: #232746;
+  color: #f8fafc;
+}
+
+.window-control.window-close:hover {
+  background: #7f1d1d;
+  color: #ffffff;
+}
+
+.hero-copy {
+  grid-column: 2;
+  display: grid;
+  justify-items: center;
+  min-width: 0;
+  text-align: center;
+  transform: translateX(28px);
+}
+
+.title-art {
+  width: min(310px, 100%);
+  height: 34px;
+  background: #f8fafc;
+  -webkit-mask: url("/secret-tunnel-title.svg") center / contain no-repeat;
+  mask: url("/secret-tunnel-title.svg") center / contain no-repeat;
+}
+
+/* Seamless loop with an evenly paced palette. The colours form a closed cycle -
+   indigo, cyan, amber, red and back to indigo - with every step the same width, so
+   the wrap from the last colour to the first blends at exactly the same rate as
+   every other transition instead of cutting. The cycle is laid out twice across
+   an image two container-widths wide, so shifting by one container width
+   advances exactly one cycle and the final frame equals the first.
+
+   The second declaration interpolates in oklab, which keeps the red-to-indigo leg
+   vivid rather than passing through the grey-brown that sRGB mixing produces.
+   A webview too old to parse it simply ignores that line and keeps the sRGB
+   gradient above, so the title can never end up unpainted. */
+body.running .title-art {
+  background: linear-gradient(
+    90deg,
+    #4f46e5 0%, #6366f1 10%, #06b6d4 20%, #f59e0b 30%, #dc2626 40%,
+    #4f46e5 50%, #6366f1 60%, #06b6d4 70%, #f59e0b 80%, #dc2626 90%,
+    #4f46e5 100%
+  );
+  background: linear-gradient(
+    90deg in oklab,
+    #4f46e5 0%, #6366f1 10%, #06b6d4 20%, #f59e0b 30%, #dc2626 40%,
+    #4f46e5 50%, #6366f1 60%, #06b6d4 70%, #f59e0b 80%, #dc2626 90%,
+    #4f46e5 100%
+  );
+  background-size: 200% 100%;
+  animation: title-elements 4800ms linear infinite;
+}
+
+.tagline {
+  margin-top: 5px;
+  color: #cbd5e1;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+@keyframes title-elements {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    /* Exactly one container width, which is exactly one palette cycle. */
+    background-position: 100% 50%;
+  }
+}
+
+.hero-controls {
+  display: grid;
+  /* The right column carries three segments now, so it gets the slack and
+     the row starts further left to pay for it. */
+  grid-template-columns: minmax(120px, 0.8fr) minmax(260px, 1.2fr);
+  align-items: end;
+  gap: 8px;
+  margin-left: 132px;
+}
+
+.section {
+  padding: 10px 0;
+  border-top: 1px solid #262a4b;
+}
+
+.section.compact {
+  padding-bottom: 8px;
+}
+
+.zrok-setup {
+  padding: 8px 0 10px;
+}
+
+.zrok-setup[hidden] {
+  display: none;
+}
+
+.zrok-setup button {
+  width: 78px;
+}
+
+.zrok-hint {
+  margin: 6px 0 0;
+  font-size: 13px;
+}
+
+.zrok-hint a {
+  color: #818cf8;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.zrok-hint a:hover {
+  color: #a5b4fc;
+}
+
+.copy-row input {
+  flex: 1;
+}
+
+.copy-row button {
+  width: 70px;
+  flex: 0 0 auto;
+}
+
+.copy-row button.icon-button {
+  width: 34px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copy-row button.icon-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.button-row {
+  margin-top: 8px;
+}
+
+.button-row button {
+  flex: 1;
+}
+
+.folder-button {
+  width: 100%;
+  margin-bottom: 10px;
+  color: #ffffff;
+  border-color: #4f46e5;
+  background: #4f46e5;
+  box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);
+}
+
+.folder-button:hover {
+  background: #3730a3;
+}
+
+body.needs-folder .folder-button {
+  animation: folder-halo 1900ms ease-in-out infinite;
+}
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  height: 34px;
+  margin: 0;
+  color: #f8fafc;
+  font-weight: 500;
+}
+
+.switch-row input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.switch {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  flex: 0 0 auto;
+  border: 1px solid #4b5563;
+  border-radius: 999px;
+  background: #15172c;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #9ca3af;
+  transition: transform 150ms ease, background 150ms ease;
+}
+
+.switch-row input:checked + .switch {
+  border-color: #4f46e5;
+  background: #4f46e5;
+}
+
+.switch-row input:checked + .switch::after {
+  transform: translateX(18px);
+  background: #ffffff;
+}
+
+.switch-row:has(input:focus-visible) .switch {
+  outline: 2px solid #4f46e5;
+  outline-offset: 1px;
+}
+
+.mode-control {
+  display: grid;
+  gap: 5px;
+}
+
+.control-label {
+  color: #d1d5db;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.segmented {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  height: 34px;
+  padding: 2px;
+  border: 1px solid #3b3f6b;
+  border-radius: 7px;
+  background: #15172c;
+}
+
+.segment {
+  height: 28px;
+  border: 0;
+  border-radius: 5px;
+  padding: 0 4px;
+  background: transparent;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.segment:hover {
+  background: #232746;
+}
+
+.segment.active {
+  color: #ffffff;
+  background: #4f46e5;
+}
+
+.segment.active:hover {
+  background: #3730a3;
+}
+
+.notice {
+  margin: 2px 0 6px;
+  padding: 9px 10px;
+  border: 1px solid #b45309;
+  border-radius: 7px;
+  color: #fed7aa;
+  background: #1f1308;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+body.zrok-needs-enable .notice {
+  display: none;
+}
+
+.diagnostics {
+  padding-bottom: 0;
+}
+
+.diag-row {
+  justify-content: space-between;
+  height: 24px;
+}
+
+/* The label states what the row is and never changes, so it keeps its width.
+   The value is backend text - a state word most of the time, an error message
+   when something is wrong - so it takes all the room the label leaves and is
+   the side that gives way.
+
+   `flex: 1 1 auto`, not `0 1 auto`: the box has to be the space the row grants
+   it, not the width of the text already in it. Content-sized, the box and the
+   string are the same measurement, and a fit is then decided by whether the
+   measurer and the layout engine agree to the sub-pixel - which is how "Ready"
+   came to be shown as "Rea…" with half the row empty beside it.
+
+   The text stays right-aligned, so growing the box changes nothing visually. */
+.diag-row span {
+  flex: 0 0 auto;
+  color: #cbd5e1;
+}
+
+.diag-row strong {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: #f8fafc;
+  font-size: 13px;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Health colouring. Colour is never the only signal: each value also states
+   the condition in words, so the row still reads correctly in greyscale or
+   with a colour vision deficiency. The bare classes are reused in the
+   instructions, where they name a state without being a live indicator. */
+.state-ok {
+  color: #34d399;
+}
+
+.state-warn {
+  color: #fbbf24;
+}
+
+.state-bad {
+  color: #f87171;
+}
+
+.diag-row strong::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 7px;
+  border-radius: 50%;
+  vertical-align: middle;
+  background: #64748b;
+}
+
+.diag-row strong.state-ok::before {
+  background: #34d399;
+}
+
+.diag-row strong.state-warn::before {
+  background: #fbbf24;
+}
+
+.diag-row strong.state-bad::before {
+  background: #f87171;
+}
+
+/* The reason and the Instructions link share one row: the window is a fixed
+   size, so a separate row for the link would push it out of view whenever a
+   red state also needs explaining. */
+.diag-footer {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.diag-footer .diag-reason {
+  flex: 1;
+  margin: 0;
+  /* The window cannot grow, so a long backend message is clamped rather than
+     pushing the Instructions link out of view. The full text stays available
+     as the title attribute. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.diag-links {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 14px;
+  margin-left: auto;
+}
+
+.diag-footer .link-button {
+  flex: 0 0 auto;
+  line-height: 1.35;
+}
+
+/* A text-styled button: used for links, since the CSP forbids navigation and
+   every external URL is opened through the backend instead. */
+.link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #a5b4fc;
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  color: #c7d2fe;
+}
+
+.sheet {
+  width: 520px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 48px);
+  padding: 0;
+  border: 1px solid #232746;
+  border-radius: 12px;
+  background: #15172c;
+  color: #e5e7eb;
+}
+
+.sheet::backdrop {
+  background: rgba(2, 6, 23, 0.72);
+}
+
+.sheet-head,
+.sheet-foot {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+}
+
+.sheet-head {
+  justify-content: space-between;
+  border-bottom: 1px solid #232746;
+}
+
+.sheet-head h2 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.sheet-foot {
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid #232746;
+}
+
+.sheet-foot .primary {
+  background: #4f46e5;
+}
+
+.icon-button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: #94a3b8;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  background: #232746;
+  color: #e5e7eb;
+}
+
+/* The only scrolling region in the app: the window is fixed size, so the steps
+   scroll rather than overflowing out of view. */
+.sheet-body {
+  max-height: 380px;
+  overflow-y: auto;
+  padding: 4px 16px 12px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.sheet-body h3 {
+  margin: 14px 0 6px;
+  font-size: 13px;
+  color: #a5b4fc;
+}
+
+.sheet-body ol,
+.sheet-body ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.sheet-body li {
+  margin-bottom: 4px;
+}
+
+.sheet-body p {
+  margin: 6px 0;
+}
+
+.sheet-note {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+/* The one actionable sentence explaining a red row. */
+.diag-reason {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.35;
+  color: #fca5a5;
+}
+
+.diag-reason[hidden] {
+  display: none;
+}
+
+@keyframes cloud-breathe {
+  0%,
+  100% {
+    transform: translate(-5px, -4px) scale(0.985);
+  }
+
+  50% {
+    transform: translate(-5px, -4px) scale(1.018);
+  }
+}
+
+@keyframes folder-halo {
+  0%,
+  100% {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);
+  }
+
+  45% {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.18), 0 0 18px rgba(139, 92, 246, 0.28);
+  }
+}
+
+/* Inline literals in the About text: hostnames, ports, package names. */
+.sheet-body code {
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: #111329;
+  color: #7dd3fc;
+  font-size: 12px;
+}
+
+/* GitHub panel ---------------------------------------------------------- */
+
+.github-toggle {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin: 12px 0;
+  font-size: 13px;
+}
+
+/* The global `input` rule sets width:100% and height:34px for text fields, which
+   turns a bare checkbox into a full-width block. Because the row is a flex
+   container that does not shrink it, the label is pushed out of view and the
+   sheet gains a horizontal scrollbar. Size the checkbox explicitly instead. */
+.github-toggle input[type="checkbox"] {
+  width: 16px;
+  min-width: 16px;
+  height: 16px;
+  margin: 2px 0 0;
+  padding: 0;
+  flex: 0 0 auto;
+  accent-color: #4f46e5;
+}
+
+.github-toggle span {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Why the feature cannot act. Amber rather than red: it is a precondition the
+   user has not met yet, not a failure. */
+.github-blocked {
+  margin: 8px 0;
+  padding: 8px 10px;
+  border-left: 3px solid #b45309;
+  border-radius: 4px;
+  background: rgba(180, 83, 9, 0.12);
+  font-size: 12px;
+  color: #fcd34d;
+}
+
+.github-meta {
+  margin: 6px 0;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.github-bind-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.github-bind-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.github-slash {
+  color: #6b7280;
+}
+
+.github-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.github-actions .primary {
+  background: #4f46e5;
+}
+
+.github-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.github-plans {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.github-plan {
+  padding: 10px 12px;
+  border: 1px solid #232746;
+  border-radius: 8px;
+  background: #0f1020;
+}
+
+.github-plan h4 {
+  margin: 0 0 6px;
+  font-size: 13px;
+}
+
+.github-commit-message {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: #e5e7eb;
+}
+
+/* The file list is the substance of what is being approved, so it stays
+   readable and monospaced rather than blending into the prose around it. */
+.github-paths {
+  margin: 0 0 8px;
+  padding-left: 18px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: #cbd5e1;
+  word-break: break-all;
+}
+
+.github-warning {
+  margin: 4px 0;
+  font-size: 12px;
+  color: #fcd34d;
+}
+
+.github-message {
+  flex: 1;
+  margin: 0;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.github-message.error {
+  color: #fca5a5;
+}
+
+/* Scoped to this sheet: the shared .sheet-foot is right-aligned, and About and
+   Instructions depend on that. Only the GitHub footer needs the status line on
+   the left with the close button opposite it. */
+#github .sheet-foot {
+  justify-content: space-between;
+}
+
+/* Version chip. Each generation's skin is distinguishable from the last at a
+   glance, and this badge names which one you are looking at: 0.1.x was teal,
+   v2 was violet, v3 is indigo. */
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+}
+
+.title-row .title-art {
+  width: min(280px, 100%);
+  flex: 0 1 auto;
+}
+
+.version-chip {
+  flex: 0 0 auto;
+  padding: 1px 8px;
+  border: 1px solid #4f46e5;
+  border-radius: 999px;
+  color: #a5b4fc;
+  background: rgba(109, 40, 217, 0.18);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* The GitHub mark, used as the button that opens the GitHub sheet. It sits in
+   the same row as the text links, so it is sized to their cap height. */
+.diag-links .gh-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  text-decoration: none;
+  line-height: 0;
+}
+
+/* The inlined connection asset uses .gh-mark internally for its glyph fill,
+   so sizing is scoped to the root element instead of that class. */
+.diag-links .gh-button .gh-connection {
+  width: 20px;
+  height: 20px;
+  display: block;
+  flex: none;
+}
+
+/* GitHub account connection button. Two states on one element: the icon stays,
+   the label and colour change. No dialog, no settings menu. */
+.diag-links .gh-button {
+  gap: 7px;
+  padding: 4px 10px;
+  line-height: 1;
+  border-radius: 999px;
+  border: 1px solid var(--line, #2f3458);
+  transition: border-color 120ms ease, color 120ms ease, background-color 120ms ease;
+}
+
+.gh-label {
+  font-size: 12px;
+  letter-spacing: 0.01em;
+}
+
+.diag-links .gh-button[data-state="connected"] {
+  border-color: #3fb950;
+  color: #3fb950;
+}
+
+.diag-links .gh-button[data-state="connecting"] {
+  border-color: #d29922;
+  color: #d29922;
+}
+
+.diag-links .gh-button[data-state="connected"]:hover .gh-label::after {
+  content: " — disconnect";
+  opacity: 0.75;
+}
+
+/* An explicit display beats the [hidden] attribute's UA rule, so restore it. */
+.gh-device[hidden] {
+  display: none;
+}
+
+.gh-device {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 0;
+  font-size: 12px;
+}
+
+/* The label yields before the code does: the code is the one thing that must
+   stay whole and readable, whatever the window width. */
+.gh-device-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.gh-device-code {
+  flex: 0 0 auto;
+}
+
+.gh-device-code {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 15px;
+  letter-spacing: 0.18em;
+  padding: 3px 9px;
+  border-radius: 6px;
+  border: 1px solid var(--line, #2f3458);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.gh-error {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #f85149;
+}
+
+/* Network follows the fixed tab deck; it does not resize the main window. The
+   content is taller than the window once both exchange areas are drawn, so the
+   panel scrolls itself - the same answer .folders-panel and .prompt-panel give,
+   and the only one available when the window cannot grow. */
+.network-panel { overflow-y: auto; }
+.network-panel .section { display: flex; flex-direction: column; gap: 5px; }
+/* The panel's own selects only ever had a width and a height, so they fell back
+   to the platform's white box beside fields that are dark. Same dressing as
+   .smart-name: native control, borrowed colours, no custom picker. */
+.network-panel select { border: 1px solid #3b3f6b; border-radius: 7px; padding: 0 8px; font: inherit; color: #f8fafc; background: #15172c; }
+.network-panel select:focus-visible { outline: 2px solid #4f46e5; outline-offset: 1px; }
+.network-panel .panel-title, .network-panel .panel-note, .network-message { margin: 0; }
+.network-panel .panel-note { font-size: 12px; line-height: 1.35; }
+.network-panel label { font-size: 12px; }
+.network-panel input:not([type="checkbox"]), .network-panel select { min-width: 0; width: 100%; box-sizing: border-box; }
+.network-panel input:not([type="checkbox"]), .network-panel select:not([multiple]) { height: 30px; }
+.network-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.network-row > select { flex: 1 1 auto; }
+.network-row > button { flex: 0 0 auto; }
+.network-panel button { min-height: 28px; padding: 3px 9px; }
+#network-grants, #network-profile-options { display: flex; flex-direction: column; gap: 5px; }
+/* Same global `input` rule as `.github-toggle` above: width:100% and height:34px
+   are for a text field, and on a bare checkbox they make a full-width block that
+   pushes its own label onto the next line. The panel-wide rules opposite skip
+   checkboxes rather than sizing them, so size them here. */
+.network-panel input[type="checkbox"] { width: 16px; min-width: 16px; height: 16px; margin: 0 6px 0 0; padding: 0; vertical-align: -3px; accent-color: #4f46e5; }
+.network-panel label:has(> input[type="checkbox"]) { display: flex; align-items: center; margin-bottom: 0; font-weight: 400; }
+#network-grants[hidden], #network-profile-options[hidden] { display: none; }
+#network-roots { height: 44px; }
+.network-message { display: block; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 12px; height: 18px; }
+/* The purpose toggle sits with the invitation it changes, and the switch
+   pattern is the one the Overview tab already uses. */
+.network-switch { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 12px; font-weight: 600; }
+.network-switch > span:first-child { flex: 1 1 auto; min-width: 0; }
+.network-switch .switch { width: 38px; height: 21px; }
+.network-switch .switch::after { width: 14px; height: 14px; }
+.network-switch input:checked + .switch::after { transform: translateX(16px); }
+/* One place to put something in, one place to take something out.
+   Every control of both halves of the exchange used to sit in one flat column,
+   so nothing on screen said which half a field belonged to - the outgoing
+   invitation and the incoming one were two identical boxes in a row. The frame
+   is what marks them; it carries no state and no decoration of its own. */
+.network-area { display: flex; flex-direction: column; gap: 5px; min-width: 0; padding: 7px 8px; border: 1px solid #2a2e52; border-radius: 7px; background: #15172c; }
+.network-area-title { margin: 0; color: #9aa3c7; font-size: 11px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; }
+/* The share method decides which controls exist, not which are greyed out: the
+   panel-wide `width: 100%` rules above would otherwise lay a hidden field out
+   as a full-width empty block, the same trap `#network-grants[hidden]` hit. */
+#network-short-row[hidden], #network-file-password[hidden],
+#network-copy-link[hidden], #network-save-file[hidden], #network-open-file[hidden] { display: none; }
+.network-planned { display: flex; align-items: center; gap: 4px; }
+.network-planned svg { width: 1em; height: 1em; flex: 0 0 1em; }
+
+/* Connection purpose: one three-way choice drawn as three illustrations, not
+   three switches. The radios are the control and stay in the tab order; only
+   their native box is taken out of the layout, because the picture is what is
+   painted. `display: none` would take them out of the tab order with it, so
+   they are clipped instead.
+
+   Everything here is id-scoped on purpose. The panel-wide rules above size a
+   text field (`width: 100%`, `height: 30px`) and match `[type="radio"]`, so a
+   plain class would lose to them and put a 30px box inside each picture.
+
+   The artwork carries its own caption and its own thin idle border, so this
+   adds neither. What it adds is the state the control owns: a restrained
+   selected fill with a small mark, hover, focus and disabled. */
+#network-mode { min-width: 0; margin: 0; padding: 0; border: 0; }
+#network-mode > legend { margin: 0 0 5px; padding: 0; color: #d1d5db; font-size: 12px; font-weight: 600; }
+/* Equal shares of the row, so the artwork scales uniformly with the panel and
+   never carries a width of its own. */
+.mode-options { display: flex; gap: 6px; min-width: 0; }
+.mode-option { position: relative; flex: 1 1 0; min-width: 0; margin: 0; padding: 0; border-radius: 7px; cursor: pointer; }
+.mode-option img { display: block; width: 100%; height: auto; }
+#network-mode input { position: absolute; top: 0; left: 0; width: 1px; height: 1px; min-width: 0; margin: 0; padding: 0; border: 0; background: none; opacity: 0; clip-path: inset(50%); }
+.mode-option:hover { background: #1b1e38; }
+.mode-option:has(input:checked) { background: #232746; }
+/* The selected mark, drawn in the corner the artwork leaves empty. */
+.mode-option:has(input:checked)::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  width: 4px;
+  height: 8px;
+  border: solid #a5b4fc;
+  border-width: 0 1.6px 1.6px 0;
+  transform: rotate(45deg);
+}
+.mode-option:has(input:focus-visible) { outline: 2px solid #4f46e5; outline-offset: 1px; }
+#network-mode:disabled .mode-option { cursor: default; opacity: 0.6; }
+#network-mode:disabled .mode-option:hover { background: none; }
+#network-mode:disabled .mode-option:has(input:checked):hover { background: #232746; }
+
+/* The System Prompt tab. Four stacked text boxes in a window that does not
+   grow, so the panel scrolls itself rather than the window changing size, and
+   every box has a height set here rather than one implied by its content. */
+.prompt-panel {
+  overflow-y: auto;
+}
+
+.prompt-panel .section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 0;
+  border-top: none;
+}
+
+.prompt-panel label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+}
+
+.prompt-panel .panel-note {
+  margin: 0;
+  line-height: 1.35;
+}
+
+.prompt-text {
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  resize: none;
+  border: 1px solid #3b3f6b;
+  border-radius: 7px;
+  padding: 7px 9px;
+  color: #f8fafc;
+  background: #15172c;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.4;
+  /* A textarea scrolls its own value, so a long prompt is bounded by the box
+     instead of pushing the panel past the window. */
+  overflow-y: auto;
+}
+
+.prompt-text:focus {
+  outline: 2px solid #4f46e5;
+  outline-offset: 1px;
+}
+
+.prompt-text[readonly] {
+  color: #cbd5e1;
+  background: #101227;
+}
+
+.prompt-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin-top: 10px;
+}
+
+.prompt-row button {
+  flex: 0 0 auto;
+  height: 30px;
+}
+
+/* Growing flex item with `min-width: 0`, which is the shape `data-fit` needs:
+   the box is the room the row grants it, never the width of the text in it. */
+.prompt-row .panel-note {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The Storage Box sheet reuses the application's controls, palette and fixed
+   geometry; only the pieces with no existing equivalent are declared here. */
+.storage-panel .section { margin-bottom: 12px; }
+.storage-panel .panel-note { margin: 0 0 12px; }
+.storage-panel .button-row { gap: 6px; }
+.storage-panel .button-row button { min-width: 0; padding-inline: 10px; }
+.storage-panel select { width: 100%; min-width: 0; }
+
+/* The value half of a status row: the box is the room the row grants it, never
+   the width of the string in it, which is what the fitter measures against. */
+.storage-panel .diag-row strong {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: right;
+}
+
+#storage-files {
+  height: 176px;
+  margin-block: 8px;
+  font: inherit;
+  background: inherit;
+  color: inherit;
+  border: 1px solid currentColor;
+}
+#storage-files option { padding: 4px 6px; }
+
+/* A fixed row for the running commentary, so a longer message never reflows the
+   controls above it. */
+.storage-message { height: 22px; margin: 8px 0 0; }
+.storage-panel [data-fit],
+.storage-sheet [data-fit] {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.storage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.storage-grid > div { min-width: 0; }
+
+/* The form is the sheet's own grid row, so head and foot stay put while only
+   the body scrolls. */
+.storage-sheet form { display: contents; }
+.storage-sheet input:not([type="checkbox"]),
+.storage-sheet select,
+.storage-sheet textarea {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.storage-sheet .copy-row input { width: auto; }
+.storage-sheet label { display: block; margin-top: 10px; margin-bottom: 4px; }
+.storage-sheet .storage-check { display: flex; align-items: center; gap: 8px; }
+.storage-sheet .storage-check input[type="checkbox"] {
+  flex: none;
+  width: 16px;
+  min-width: 16px;
+  height: 16px;
+  margin: 0;
+}
+.storage-sheet textarea { resize: none; font: 13px/1.4 monospace; }
+.storage-sheet .sheet-foot { justify-content: flex-end; gap: 8px; }
+.storage-sheet select,
+.storage-sheet textarea {
+  color: #f8fafc;
+  background: #15172c;
+  border: 1px solid #3b3f6b;
+  border-radius: 7px;
+  padding: 6px 10px;
+}
+.storage-sheet select { height: 34px; font: inherit; }
+.storage-sheet select:focus-visible,
+.storage-sheet textarea:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 1px;
+}

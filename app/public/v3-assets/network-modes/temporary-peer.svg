@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 96" color="#a5b4fc" role="img" aria-label="Temporary peer, 24 hours">
+  <title>Temporary peer, 24 hours</title>
+  <rect class="mode-frame" x="1" y="1" width="178" height="94" rx="7" fill="none" stroke="currentColor" stroke-opacity=".45"/>
+  <g class="mode-glyph" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="40" y="28" width="27" height="17" rx="2"/>
+    <path d="m40 45-4 5h35l-4-5m-18 3h9"/>
+    <rect x="113" y="28" width="27" height="17" rx="2"/>
+    <path d="m113 45-4 5h35l-4-5m-18 3h9"/>
+    <path d="M73 36.5h34" stroke-dasharray="3 4"/>
+    <circle cx="90" cy="18" r="7"/>
+    <path d="M90 14v4h4"/>
+  </g>
+  <g class="mode-copy" font-family="system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" text-anchor="middle">
+    <text x="90" y="69" font-size="13" font-weight="600" fill="#f8fafc">Temporary peer</text>
+    <text x="90" y="85" font-size="11.5" fill="#aab0c5">24 hours</text>
+  </g>
+</svg>
